@@ -336,7 +336,7 @@ public class MultiAgentOrchestrator : IMultiAgentOrchestrator
         }
     }
 
-    public async Task<AgentResult<bool>> CancelWorkflowAsync(string sessionToken)
+    public async Task<AgentResult<CancellationResult>> CancelWorkflowAsync(string sessionToken)
     {
         try
         {
@@ -345,19 +345,23 @@ public class MultiAgentOrchestrator : IMultiAgentOrchestrator
             var session = await _sessionService.GetSessionAsync(sessionToken);
             if (session == null)
             {
-                return new AgentResult<bool>
-                {
-                    Success = false,
-                    ErrorMessage = "Session not found"
-                };
+            return new AgentResult<CancellationResult>
+            {
+                Success = false,
+                ErrorMessage = "Session not found"
+            };
             }
 
             var result = await _sessionService.UpdateSessionStatusAsync(session.Id, SessionStatus.Failed, "Workflow cancelled by user");
 
-            return new AgentResult<bool>
+            return new AgentResult<CancellationResult>
             {
                 Success = result,
-                Data = result
+                Data = new CancellationResult
+                {
+                    WasCancelled = result,
+                    Message = result ? "Workflow cancelled successfully" : "Failed to cancel workflow"
+                }
             };
         }
         catch (Exception ex)

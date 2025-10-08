@@ -4,6 +4,7 @@ using CVAgentApp.Core.Entities;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using CVAgentApp.Core.Enums;
+using CVAgentApp.Core.Interfaces;
 
 namespace CVAgentApp.Infrastructure.Agents;
 
