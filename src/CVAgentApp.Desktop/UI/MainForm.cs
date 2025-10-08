@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Core.Entities;
+using CVAgentApp.Core.Enums;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using CVAgentApp.Desktop.Models;
