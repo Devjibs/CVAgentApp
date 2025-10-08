@@ -414,3 +414,11 @@ Temporary Items
 test_cv.txt
 downloaded_cv.pdf
 downloaded_cover.pdf
+
+# API Keys and sensitive configuration
+**/appsettings.Production.json
+**/appsettings.Local.json
+**/secrets.json
+**/.env
+**/.env.local
+**/.env.production
