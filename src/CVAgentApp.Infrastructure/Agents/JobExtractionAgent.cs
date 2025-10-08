@@ -121,29 +121,29 @@ public class JobExtractionAgent : IJobExtractionAgent
             }
 
             // Use OpenAI with web search to analyze the job posting
-            var analysisPrompt = $$"""
+            var analysisPrompt = $@"
                 Analyze the following job posting and extract structured information. Use web search to gather additional company information if needed.
                 Return a JSON response with the following structure:
                 {{
-                    "jobTitle": "string",
-                    "company": "string",
-                    "location": "string",
-                    "employmentType": "FullTime|PartTime|Contract|Internship|Temporary",
-                    "experienceLevel": "Entry|Mid|Senior|Lead|Executive",
-                    "description": "string",
-                    "requirements": "string",
-                    "responsibilities": "string",
-                    "requiredSkills": ["string"],
-                    "requiredQualifications": ["string"],
-                    "companyInfo": {{
-                        "name": "string",
-                        "mission": "string",
-                        "description": "string",
-                        "industry": "string",
-                        "size": "string",
-                        "website": "string",
-                        "values": ["string"],
-                        "recentNews": ["string"]
+                    ""jobTitle"": ""string"",
+                    ""company"": ""string"",
+                    ""location"": ""string"",
+                    ""employmentType"": ""FullTime|PartTime|Contract|Internship|Temporary"",
+                    ""experienceLevel"": ""Entry|Mid|Senior|Lead|Executive"",
+                    ""description"": ""string"",
+                    ""requirements"": ""string"",
+                    ""responsibilities"": ""string"",
+                    ""requiredSkills"": [""string""],
+                    ""requiredQualifications"": [""string""],
+                    ""companyInfo"": {{
+                        ""name"": ""string"",
+                        ""mission"": ""string"",
+                        ""description"": ""string"",
+                        ""industry"": ""string"",
+                        ""size"": ""string"",
+                        ""website"": ""string"",
+                        ""values"": [""string""],
+                        ""recentNews"": [""string""]
                     }}
                 }}
 
@@ -151,7 +151,7 @@ public class JobExtractionAgent : IJobExtractionAgent
                 {jobContent}
 
                 Company Name (if provided): {companyName ?? "Not provided"}
-                """;
+                ";
 
             var analysisResult = await _openAIService.AnalyzeJobPostingAsync(jobUrl, companyName);
 
@@ -220,23 +220,23 @@ public class JobExtractionAgent : IJobExtractionAgent
         {
             _logger.LogInformation("Researching company: {CompanyName}", companyName);
 
-            var researchPrompt = $$"""
+            var researchPrompt = $@"
                 Research the following company and provide detailed information.
                 Use web search to gather current information about the company.
                 Return a JSON response with the following structure:
                 {{
-                    "name": "string",
-                    "mission": "string",
-                    "description": "string",
-                    "industry": "string",
-                    "size": "string",
-                    "website": "string",
-                    "values": ["string"],
-                    "recentNews": ["string"]
+                    ""name"": ""string"",
+                    ""mission"": ""string"",
+                    ""description"": ""string"",
+                    ""industry"": ""string"",
+                    ""size"": ""string"",
+                    ""website"": ""string"",
+                    ""values"": [""string""],
+                    ""recentNews"": [""string""]
                 }}
 
                 Company Name: {companyName}
-                """;
+                ";
 
             var researchResult = await _openAIService.ResearchCompanyAsync(companyName);
 
@@ -275,13 +275,13 @@ public class JobExtractionAgent : IJobExtractionAgent
     {
         try
         {
-            var skillsPrompt = $$"""
+            var skillsPrompt = $@"
                 Extract all required skills and technologies from the following job description.
                 Return a JSON array of skill names.
                 
                 Job Description:
                 {jobDescription}
-                """;
+                ";
 
             var result = await _openAIService.AnalyzeJobPostingAsync("", null);
             var skills = JsonSerializer.Deserialize<List<string>>(result, new JsonSerializerOptions

@@ -89,14 +89,14 @@ public class ReviewAgent : IReviewAgent
             var reviewPrompt = $"""
                 Review the following generated document for quality, truthfulness, and compliance.
                 Return a JSON response with the following structure:
-                {{
+                {
                     "isTruthful": boolean,
                     "qualityScore": number (0-100),
                     "issues": ["string"],
                     "fabricatedContent": ["string"],
                     "recommendations": ["string"],
                     "requiresHumanReview": boolean
-                }}
+                }
 
                 Document Type: {type}
                 Document Content:

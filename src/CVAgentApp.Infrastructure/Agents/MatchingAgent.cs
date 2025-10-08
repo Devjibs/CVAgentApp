@@ -90,18 +90,18 @@ public class MatchingAgent : IMatchingAgent
                 $"{candidate.FirstName} {candidate.LastName}", job.JobTitle);
 
             // Create matching prompt
-            var matchingPrompt = $"""
+            var matchingPrompt = $@"
                 Analyze the match between the candidate and job requirements.
                 Calculate a match score (0-100) and provide detailed analysis.
                 Return a JSON response with the following structure:
                 {{
-                    "matchScore": number (0-100),
-                    "matchingSkills": ["string"],
-                    "skillGaps": ["string"],
-                    "strengths": ["string"],
-                    "recommendations": ["string"],
-                    "skillScores": {{
-                        "skillName": number (0-100)
+                    ""matchScore"": number (0-100),
+                    ""matchingSkills"": [""string""],
+                    ""skillGaps"": [""string""],
+                    ""strengths"": [""string""],
+                    ""recommendations"": [""string""],
+                    ""skillScores"": {{
+                        ""skillName"": number (0-100)
                     }}
                 }}
 
@@ -117,7 +117,7 @@ public class MatchingAgent : IMatchingAgent
                 Required Skills: {JsonSerializer.Serialize(job.RequiredSkills)}
                 Required Qualifications: {JsonSerializer.Serialize(job.RequiredQualifications)}
                 Description: {job.Description}
-                """;
+                ";
 
             var matchingResult = await _openAIService.AnalyzeCandidateAsync(matchingPrompt);
 

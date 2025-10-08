@@ -120,68 +120,68 @@ public class CVParsingAgent : ICVParsingAgent
             }
 
             // Use OpenAI to analyze the CV content
-            var analysisPrompt = $$"""
+            var analysisPrompt = $@"
                 Analyze the following CV and extract structured information. Return a JSON response with the following structure:
                 {{
-                    "firstName": "string",
-                    "lastName": "string", 
-                    "email": "string",
-                    "phone": "string",
-                    "location": "string",
-                    "summary": "string",
-                    "workExperiences": [
+                    ""firstName"": ""string"",
+                    ""lastName"": ""string"", 
+                    ""email"": ""string"",
+                    ""phone"": ""string"",
+                    ""location"": ""string"",
+                    ""summary"": ""string"",
+                    ""workExperiences"": [
                         {{
-                            "company": "string",
-                            "position": "string",
-                            "startDate": "YYYY-MM-DD",
-                            "endDate": "YYYY-MM-DD or null",
-                            "isCurrent": boolean,
-                            "description": "string",
-                            "achievements": ["string"]
+                            ""company"": ""string"",
+                            ""position"": ""string"",
+                            ""startDate"": ""YYYY-MM-DD"",
+                            ""endDate"": ""YYYY-MM-DD or null"",
+                            ""isCurrent"": boolean,
+                            ""description"": ""string"",
+                            ""achievements"": [""string""]
                         }}
                     ],
-                    "education": [
+                    ""education"": [
                         {{
-                            "institution": "string",
-                            "degree": "string",
-                            "fieldOfStudy": "string",
-                            "startDate": "YYYY-MM-DD",
-                            "endDate": "YYYY-MM-DD",
-                            "gpa": decimal or null
+                            ""institution"": ""string"",
+                            ""degree"": ""string"",
+                            ""fieldOfStudy"": ""string"",
+                            ""startDate"": ""YYYY-MM-DD"",
+                            ""endDate"": ""YYYY-MM-DD"",
+                            ""gpa"": decimal or null
                         }}
                     ],
-                    "skills": [
+                    ""skills"": [
                         {{
-                            "name": "string",
-                            "level": "Beginner|Intermediate|Advanced|Expert",
-                            "category": "Technical|Soft|Language|Industry",
-                            "yearsOfExperience": integer
+                            ""name"": ""string"",
+                            ""level"": ""Beginner|Intermediate|Advanced|Expert"",
+                            ""category"": ""Technical|Soft|Language|Industry"",
+                            ""yearsOfExperience"": integer
                         }}
                     ],
-                    "certifications": [
+                    ""certifications"": [
                         {{
-                            "name": "string",
-                            "issuingOrganization": "string",
-                            "issueDate": "YYYY-MM-DD",
-                            "expiryDate": "YYYY-MM-DD or null",
-                            "credentialId": "string"
+                            ""name"": ""string"",
+                            ""issuingOrganization"": ""string"",
+                            ""issueDate"": ""YYYY-MM-DD"",
+                            ""expiryDate"": ""YYYY-MM-DD or null"",
+                            ""credentialId"": ""string""
                         }}
                     ],
-                    "projects": [
+                    ""projects"": [
                         {{
-                            "name": "string",
-                            "description": "string",
-                            "startDate": "YYYY-MM-DD",
-                            "endDate": "YYYY-MM-DD",
-                            "url": "string",
-                            "technologies": ["string"]
+                            ""name"": ""string"",
+                            ""description"": ""string"",
+                            ""startDate"": ""YYYY-MM-DD"",
+                            ""endDate"": ""YYYY-MM-DD"",
+                            ""url"": ""string"",
+                            ""technologies"": [""string""]
                         }}
                     ]
                 }}
 
                 CV Content:
                 {cvContent}
-                """;
+                ";
 
             var analysisResult = await _openAIService.AnalyzeCandidateAsync(cvContent);
 
@@ -248,13 +248,13 @@ public class CVParsingAgent : ICVParsingAgent
     {
         try
         {
-            var skillsPrompt = $$"""
+            var skillsPrompt = $@"
                 Extract all technical and soft skills from the following CV content. 
                 Return a JSON array of skill names.
                 
                 CV Content:
                 {cvContent}
-                """;
+                ";
 
             var result = await _openAIService.AnalyzeCandidateAsync(cvContent);
             var skills = JsonSerializer.Deserialize<List<string>>(result, new JsonSerializerOptions
@@ -283,13 +283,13 @@ public class CVParsingAgent : ICVParsingAgent
     {
         try
         {
-            var experiencePrompt = $$"""
+            var experiencePrompt = $@"
                 Extract work experience from the following CV content.
                 Return a JSON array of work experience objects with company, position, dates, and descriptions.
                 
                 CV Content:
                 {cvContent}
-                """;
+                ";
 
             var result = await _openAIService.AnalyzeCandidateAsync(cvContent);
             var experiences = JsonSerializer.Deserialize<List<WorkExperienceDto>>(result, new JsonSerializerOptions

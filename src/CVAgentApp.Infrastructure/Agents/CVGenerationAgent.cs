@@ -95,7 +95,7 @@ public class CVGenerationAgent : ICVGenerationAgent
             _logger.LogInformation("Generating tailored CV for {CandidateName} applying to {JobTitle}",
                 $"{candidate.FirstName} {candidate.LastName}", job.JobTitle);
 
-            var cvPrompt = $"""
+            var cvPrompt = $$"""
                 Create a tailored CV for the candidate based on the job requirements.
                 Focus on relevant skills and experiences that match the job requirements.
                 Maintain truthfulness - only include information that exists in the original CV.
@@ -175,7 +175,7 @@ public class CVGenerationAgent : ICVGenerationAgent
             _logger.LogInformation("Generating cover letter for {CandidateName} applying to {JobTitle}",
                 $"{candidate.FirstName} {candidate.LastName}", job.JobTitle);
 
-            var coverLetterPrompt = $"""
+            var coverLetterPrompt = $$"""
                 Create a compelling cover letter for the candidate applying to the job.
                 The cover letter should:
                 1. Reference the company's mission and values
