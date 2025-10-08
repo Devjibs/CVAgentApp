@@ -18,7 +18,7 @@ public class OpenAIService : IOpenAIService
         _apiKey = configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI API key not configured");
     }
 
-    public async Task<string> AnalyzeJobPostingAsync(string jobUrl, string? companyName = null)
+    public Task<string> AnalyzeJobPostingAsync(string jobUrl, string? companyName = null)
     {
         try
         {
@@ -72,7 +72,7 @@ Format the response as a structured JSON object.
             };
 
             _logger.LogInformation("Job posting analysis completed");
-            return JsonSerializer.Serialize(mockResponse);
+            return Task.FromResult(JsonSerializer.Serialize(mockResponse));
         }
         catch (Exception ex)
         {
@@ -81,7 +81,7 @@ Format the response as a structured JSON object.
         }
     }
 
-    public async Task<string> AnalyzeCandidateAsync(string cvContent)
+    public Task<string> AnalyzeCandidateAsync(string cvContent)
     {
         try
         {
@@ -171,7 +171,7 @@ Format the response as a structured JSON object.
             };
 
             _logger.LogInformation("CV analysis completed");
-            return JsonSerializer.Serialize(mockResponse);
+            return Task.FromResult(JsonSerializer.Serialize(mockResponse));
         }
         catch (Exception ex)
         {
@@ -180,7 +180,7 @@ Format the response as a structured JSON object.
         }
     }
 
-    public async Task<string> GenerateCVAsync(CandidateAnalysisResponse candidate, JobAnalysisResponse job)
+    public Task<string> GenerateCVAsync(CandidateAnalysisResponse candidate, JobAnalysisResponse job)
     {
         try
         {
@@ -260,7 +260,7 @@ E-commerce Platform (2021)
 ";
 
             _logger.LogInformation("CV generation completed");
-            return mockCV;
+            return Task.FromResult(mockCV);
         }
         catch (Exception ex)
         {
@@ -269,7 +269,7 @@ E-commerce Platform (2021)
         }
     }
 
-    public async Task<string> GenerateCoverLetterAsync(CandidateAnalysisResponse candidate, JobAnalysisResponse job)
+    public Task<string> GenerateCoverLetterAsync(CandidateAnalysisResponse candidate, JobAnalysisResponse job)
     {
         try
         {
@@ -323,7 +323,7 @@ Sincerely,
 ";
 
             _logger.LogInformation("Cover letter generation completed");
-            return mockCoverLetter;
+            return Task.FromResult(mockCoverLetter);
         }
         catch (Exception ex)
         {
@@ -332,7 +332,7 @@ Sincerely,
         }
     }
 
-    public async Task<string> ResearchCompanyAsync(string companyName)
+    public Task<string> ResearchCompanyAsync(string companyName)
     {
         try
         {
@@ -370,7 +370,7 @@ Format the response as a structured JSON object.
             };
 
             _logger.LogInformation("Company research completed for: {CompanyName}", companyName);
-            return JsonSerializer.Serialize(mockResponse);
+            return Task.FromResult(JsonSerializer.Serialize(mockResponse));
         }
         catch (Exception ex)
         {

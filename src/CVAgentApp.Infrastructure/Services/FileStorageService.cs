@@ -38,7 +38,7 @@ public class FileStorageService : IFileStorageService
         }
     }
 
-    public async Task<Stream> DownloadFileAsync(string blobUrl)
+    public Task<Stream> DownloadFileAsync(string blobUrl)
     {
         try
         {
@@ -47,7 +47,7 @@ public class FileStorageService : IFileStorageService
             var fileStream = new FileStream(blobUrl, FileMode.Open, FileAccess.Read);
 
             _logger.LogInformation("File downloaded successfully: {BlobUrl}", blobUrl);
-            return fileStream;
+            return Task.FromResult<Stream>(fileStream);
         }
         catch (Exception ex)
         {
@@ -56,7 +56,7 @@ public class FileStorageService : IFileStorageService
         }
     }
 
-    public async Task<bool> DeleteFileAsync(string blobUrl)
+    public Task<bool> DeleteFileAsync(string blobUrl)
     {
         try
         {
@@ -66,10 +66,10 @@ public class FileStorageService : IFileStorageService
             {
                 File.Delete(blobUrl);
                 _logger.LogInformation("File deleted successfully: {BlobUrl}", blobUrl);
-                return true;
+                return Task.FromResult(true);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
         catch (Exception ex)
         {
@@ -78,7 +78,7 @@ public class FileStorageService : IFileStorageService
         }
     }
 
-    public async Task<string> GenerateDownloadUrlAsync(string blobUrl, TimeSpan expiry)
+    public Task<string> GenerateDownloadUrlAsync(string blobUrl, TimeSpan expiry)
     {
         try
         {
@@ -89,7 +89,7 @@ public class FileStorageService : IFileStorageService
             var downloadUrl = $"file://{blobUrl}";
 
             _logger.LogInformation("Download URL generated successfully");
-            return downloadUrl;
+            return Task.FromResult(downloadUrl);
         }
         catch (Exception ex)
         {
