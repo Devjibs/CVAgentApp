@@ -23,18 +23,22 @@ CV Agent Desktop is a standalone Windows application that uses OpenAI's AgentKit
 ## Installation
 
 ### Option 1: Pre-built Installer
+
 1. Download the latest release from the releases page
 2. Run `install.bat` to install the application
 3. Double-click `CVAgentApp.Desktop.exe` to start the application
 
 ### Option 2: Build from Source
+
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd CV-Agent-App
    ```
 
 2. Build the application:
+
    ```bash
    build.bat
    ```
@@ -89,12 +93,14 @@ The application uses the following configuration (in `appsettings.json`):
 The embedded web server provides the following endpoints:
 
 ### CV Generation
+
 - `POST /api/CVGeneration/generate` - Generate tailored CV and cover letter
 - `GET /api/CVGeneration/session/{sessionToken}` - Get session status
 - `GET /api/CVGeneration/download/{documentId}` - Download generated document
 - `DELETE /api/CVGeneration/session/{sessionToken}` - Delete session
 
 ### Analysis
+
 - `POST /api/CVGeneration/analyze-candidate` - Analyze CV file
 - `POST /api/CVGeneration/analyze-job` - Analyze job posting
 
@@ -131,16 +137,19 @@ src/
 ### Building the Application
 
 1. **Restore packages**:
+
    ```bash
    dotnet restore
    ```
 
 2. **Build the solution**:
+
    ```bash
    dotnet build --configuration Release
    ```
 
 3. **Publish the desktop application**:
+
    ```bash
    dotnet publish "src\CVAgentApp.Desktop\CVAgentApp.Desktop.csproj" --configuration Release --runtime win-x64 --self-contained true
    ```
@@ -187,6 +196,7 @@ No server hosting or cloud deployment is required.
 ### Logs
 
 Application logs are stored in:
+
 - Console output (for debugging)
 - `logs/cv-agent-{date}.txt` (file logging)
 
@@ -205,6 +215,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 For support and questions:
+
 - Create an issue in the repository
 - Check the troubleshooting section
 - Review the application logs

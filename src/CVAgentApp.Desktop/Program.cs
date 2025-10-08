@@ -4,6 +4,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using CVAgentApp.Desktop.UI;
+using Microsoft.EntityFrameworkCore;
+using CVAgentApp.Core.Interfaces;
+using CVAgentApp.Infrastructure.Services;
+using CVAgentApp.Infrastructure.Data;
 
 namespace CVAgentApp.Desktop;
 
@@ -30,7 +34,20 @@ class Program
                     {
                         builder.AddConsole();
                     });
+                    services.AddHttpClient();
                     services.AddSingleton<IConfiguration>(configuration);
+
+                    // Persistence (in-memory DB for desktop runtime)
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseInMemoryDatabase("cvagent_desktop"));
+
+                    // Core services
+                    services.AddScoped<ICVGenerationService, CVGenerationService>();
+                    services.AddScoped<IOpenAIService, OpenAIService>();
+                    services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
+                    services.AddScoped<IFileStorageService, FileStorageService>();
+                    services.AddScoped<ISessionService, SessionService>();
+
                     services.AddTransient<MainForm>();
                 })
                 .Build();
