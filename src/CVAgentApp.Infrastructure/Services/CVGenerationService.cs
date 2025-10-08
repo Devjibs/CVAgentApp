@@ -192,7 +192,7 @@ public class CVGenerationService : ICVGenerationService
         }
     }
 
-    public async Task<byte[]> DownloadDocumentAsync(Guid documentId)
+    public Task<byte[]> DownloadDocumentAsync(Guid documentId)
     {
         try
         {
