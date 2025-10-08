@@ -4,6 +4,7 @@ using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Entities;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Infrastructure.Services;
 

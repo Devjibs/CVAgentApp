@@ -3,6 +3,8 @@ using CVAgentApp.Core.Entities;
 using CVAgentApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using CVAgentApp.Core.Enums;
+using System.Linq;
 
 namespace CVAgentApp.Infrastructure.Services;
 

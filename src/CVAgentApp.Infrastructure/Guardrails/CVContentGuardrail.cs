@@ -1,6 +1,7 @@
 using CVAgentApp.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 
 namespace CVAgentApp.Infrastructure.Guardrails;
 

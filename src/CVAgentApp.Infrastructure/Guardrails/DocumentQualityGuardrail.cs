@@ -1,6 +1,8 @@
 using CVAgentApp.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
+using CVAgentApp.Core.Enums;
+using System.Linq;
 
 namespace CVAgentApp.Infrastructure.Guardrails;
 

@@ -1,6 +1,7 @@
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Core.Entities;
 using Microsoft.Extensions.Logging;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Infrastructure.Services;
 
@@ -51,7 +52,7 @@ public class DocumentProcessingService : IDocumentProcessingService
         return System.Text.Encoding.UTF8.GetBytes(mockContent);
     }
 
-    public async Task<string> FormatDocumentAsync(string content, CVAgentApp.Core.Entities.DocumentType type)
+    public async Task<string> FormatDocumentAsync(string content, DocumentType type)
     {
         _logger.LogInformation("Simulating document formatting for type: {DocumentType}", type);
         await Task.Delay(50); // Simulate async operation

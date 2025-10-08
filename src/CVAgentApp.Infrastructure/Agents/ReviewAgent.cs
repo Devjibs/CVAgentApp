@@ -3,6 +3,7 @@ using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Entities;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Infrastructure.Agents;
 
@@ -86,18 +87,20 @@ public class ReviewAgent : IReviewAgent
         {
             _logger.LogInformation("Reviewing document of type {DocumentType}", type);
 
-            var reviewPrompt = $"""
-                Review the following generated document for quality, truthfulness, and compliance.
+            // Create review prompt
+            var reviewPrompt = $@"
+                Analyze the match between the candidate and job requirements.
+                Calculate a match score (0-100) and provide detailed analysis.
                 Return a JSON response with the following structure:
-                {
-                    "isTruthful": boolean,
-                    "qualityScore": number (0-100),
-                    "issues": ["string"],
-                    "fabricatedContent": ["string"],
-                    "recommendations": ["string"],
-                    "requiresHumanReview": boolean
-                }
-
+                {{
+                    ""isTruthful"": boolean,
+                    ""qualityScore"": number (0-100),
+                    ""issues"": [""string""],
+                    ""fabricatedContent"": [""string""],
+                    ""recommendations"": [""string""],
+                    ""requiresHumanReview"": boolean
+                }}
+           
                 Document Type: {type}
                 Document Content:
                 {content}
@@ -108,7 +111,7 @@ public class ReviewAgent : IReviewAgent
                 3. Compliance - no discriminatory content
                 4. Completeness - all required sections present
                 5. ATS compatibility - proper formatting for applicant tracking systems
-                """;
+                ";
 
             var reviewResult = await _openAIService.AnalyzeCandidateAsync(reviewPrompt);
 
@@ -172,7 +175,7 @@ public class ReviewAgent : IReviewAgent
         }
     }
 
-    public async Task<AgentResult<bool>> ValidateTruthfulnessAsync(string originalCV, string generatedCV)
+    public async Task<AgentResult<ValidationResult>> ValidateTruthfulnessAsync(string originalCV, string generatedCV)
     {
         try
         {

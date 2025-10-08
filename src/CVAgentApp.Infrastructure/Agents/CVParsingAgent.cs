@@ -3,6 +3,7 @@ using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Entities;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace CVAgentApp.Infrastructure.Agents;
 
