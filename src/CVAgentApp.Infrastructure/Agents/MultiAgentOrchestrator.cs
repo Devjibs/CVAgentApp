@@ -276,7 +276,7 @@ public class MultiAgentOrchestrator : IMultiAgentOrchestrator
             return new AgentResult<CVGenerationResponse>
             {
                 Success = false,
-                ErrorMessage = ex.Message
+                ErrorMessage = ex.Message,
             };
         }
     }

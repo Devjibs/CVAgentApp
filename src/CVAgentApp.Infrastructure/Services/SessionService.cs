@@ -36,8 +36,9 @@ public class SessionService : ISessionService
                 ExpiresAt = DateTime.UtcNow.AddHours(24)
             };
 
-            _context.Sessions.Add(session);
-            await _context.SaveChangesAsync();
+            // No need to save to database - this is a stateless service
+            // _context.Sessions.Add(session);
+            // await _context.SaveChangesAsync();
 
             _logger.LogInformation("Session created successfully: {SessionId}", session.Id);
             return session;
@@ -55,22 +56,9 @@ public class SessionService : ISessionService
         {
             _logger.LogInformation("Getting session: {SessionToken}", sessionToken);
 
-            var session = await _context.Sessions
-                .Include(s => s.Candidate)
-                .Include(s => s.JobPosting)
-                .Include(s => s.GeneratedDocuments)
-                .FirstOrDefaultAsync(s => s.SessionToken == sessionToken);
-
-            if (session != null)
-            {
-                _logger.LogInformation("Session found: {SessionId}", session.Id);
-            }
-            else
-            {
-                _logger.LogWarning("Session not found: {SessionToken}", sessionToken);
-            }
-
-            return session;
+            // Stateless service - return null since we don't persist sessions
+            _logger.LogWarning("Session not found: {SessionToken} (stateless service)", sessionToken);
+            return null;
         }
         catch (Exception ex)
         {
@@ -85,22 +73,8 @@ public class SessionService : ISessionService
         {
             _logger.LogInformation("Updating session status: {SessionId} to {Status}", sessionId, status);
 
-            var session = await _context.Sessions.FindAsync(sessionId);
-            if (session == null)
-            {
-                _logger.LogWarning("Session not found: {SessionId}", sessionId);
-                return false;
-            }
-
-            session.Status = status;
-            if (!string.IsNullOrEmpty(log))
-            {
-                session.ProcessingLog = log;
-            }
-
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Session status updated successfully: {SessionId}", sessionId);
+            // Stateless service - just log the status update
+            _logger.LogInformation("Session status updated (stateless): {SessionId} to {Status}", sessionId, status);
             return true;
         }
         catch (Exception ex)
@@ -116,19 +90,8 @@ public class SessionService : ISessionService
         {
             _logger.LogInformation("Completing session: {SessionId}", sessionId);
 
-            var session = await _context.Sessions.FindAsync(sessionId);
-            if (session == null)
-            {
-                _logger.LogWarning("Session not found: {SessionId}", sessionId);
-                return false;
-            }
-
-            session.Status = SessionStatus.Completed;
-            session.CompletedAt = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Session completed successfully: {SessionId}", sessionId);
+            // Stateless service - just log the completion
+            _logger.LogInformation("Session completed (stateless): {SessionId}", sessionId);
             return true;
         }
         catch (Exception ex)

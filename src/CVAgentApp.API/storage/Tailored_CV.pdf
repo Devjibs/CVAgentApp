@@ -1,0 +1,52 @@
+Mock PDF Content:
+
+--- Formatted CV ---
+
+JOHN DOE
+Senior Software Engineer
+Email: john.doe@email.com | Phone: +1-555-0123 | Location: San Francisco, CA
+
+PROFESSIONAL SUMMARY
+Experienced software engineer with 5+ years of experience in full-stack development, 
+specializing in C# and JavaScript. Proven track record of leading development teams 
+and delivering high-performance web applications. Strong background in Senior .NET Developer 
+role with expertise in C#, ASP.NET Core, Entity Framework.
+
+TECHNICAL SKILLS
+• Programming Languages: C#, JavaScript, SQL
+• Frameworks: .NET Core, React, Node.js
+• Databases: SQL Server, MongoDB
+• Cloud Platforms: AWS, Azure
+• Tools: Git, Docker, Jenkins
+
+PROFESSIONAL EXPERIENCE
+
+Senior Software Engineer | Tech Corp | 2020 - Present
+• Led development of scalable web applications serving 100K+ users
+• Improved application performance by 50% through optimization
+• Mentored team of 5 junior developers
+• Implemented CI/CD pipelines reducing deployment time by 70%
+
+Software Engineer | Previous Company | 2018 - 2020
+• Developed and maintained enterprise applications
+• Collaborated with cross-functional teams on product features
+• Participated in code reviews and technical design discussions
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of Technology | 2015 - 2019
+GPA: 3.8/4.0
+
+CERTIFICATIONS
+• AWS Certified Developer (2022)
+• Microsoft Certified: Azure Developer Associate (2021)
+
+PROJECTS
+E-commerce Platform (2021)
+• Full-stack web application for online shopping
+• Technologies: React, Node.js, MongoDB
+• GitHub: https://github.com/johndoe/ecommerce
+
+--------------------
+
+Generated at: 08/10/2025 23:34:19

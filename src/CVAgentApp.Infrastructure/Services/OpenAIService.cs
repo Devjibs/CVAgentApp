@@ -1,6 +1,7 @@
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Entities;
+using CVAgentApp.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -47,27 +48,28 @@ Format the response as a structured JSON object.
 ";
 
             // For now, return a mock response since we need to fix the OpenAI package
-            var mockResponse = new
+            var mockResponse = new JobAnalysisResponse
             {
-                jobTitle = "Software Engineer",
-                company = companyName ?? "Tech Company",
-                location = "Remote",
-                employmentType = "FullTime",
-                experienceLevel = "Mid",
-                description = "We are looking for a skilled software engineer to join our team.",
-                requirements = "Bachelor's degree in Computer Science, 3+ years experience",
-                responsibilities = "Develop and maintain software applications",
-                requiredSkills = new[] { "C#", "JavaScript", "SQL" },
-                requiredQualifications = new[] { "Bachelor's degree", "3+ years experience" },
-                companyInfo = new
+                JobTitle = "Senior .NET Developer",
+                Company = companyName ?? "Hays",
+                Location = "London, UK",
+                EmploymentType = EmploymentType.FullTime,
+                ExperienceLevel = ExperienceLevel.Senior,
+                Description = "We are looking for a skilled Senior .NET Developer to join our team. You will be responsible for developing and maintaining web applications using C#, ASP.NET Core, and related technologies.",
+                Requirements = "Bachelor's degree in Computer Science, 5+ years experience with .NET, C#, ASP.NET Core, Entity Framework, SQL Server",
+                Responsibilities = "Develop and maintain web applications, work with cross-functional teams, mentor junior developers",
+                RequiredSkills = new List<string> { "C#", "ASP.NET Core", "Entity Framework", "SQL Server", "JavaScript", "React", "Azure" },
+                RequiredQualifications = new List<string> { "Bachelor's degree in Computer Science", "5+ years experience with .NET" },
+                CompanyInfo = new CompanyInfoDto
                 {
-                    mission = "To innovate and create amazing software",
-                    description = "A leading technology company",
-                    industry = "Technology",
-                    size = "100-500 employees",
-                    website = "https://example.com",
-                    values = new[] { "Innovation", "Collaboration", "Excellence" },
-                    recentNews = new[] { "Company raised Series A funding" }
+                    Name = companyName ?? "Hays",
+                    Mission = "To connect talented people with great opportunities",
+                    Description = "A leading recruitment company specializing in technology roles",
+                    Industry = "Recruitment & Technology",
+                    Size = "1000+ employees",
+                    Website = "https://www.hays.co.uk",
+                    Values = new List<string> { "Excellence", "Integrity", "Innovation", "Collaboration" },
+                    RecentNews = new List<string> { "Expanding technology division", "New office opening in London" }
                 }
             };
 
@@ -106,66 +108,79 @@ Format the response as a structured JSON object.
 ";
 
             // For now, return a mock response
-            var mockResponse = new
+            var mockResponse = new CandidateAnalysisResponse
             {
-                firstName = "John",
-                lastName = "Doe",
-                email = "john.doe@email.com",
-                phone = "+1-555-0123",
-                location = "San Francisco, CA",
-                summary = "Experienced software engineer with 5+ years of experience",
-                workExperiences = new[]
+                FirstName = "John",
+                LastName = "Smith",
+                Email = "john.smith@email.com",
+                Phone = "+44 1234 567890",
+                Location = "London, UK",
+                Summary = "Senior .NET Developer with 5+ years of experience in developing scalable web applications using C#, ASP.NET Core, and cloud technologies.",
+                WorkExperiences = new List<WorkExperienceDto>
                 {
-                    new
+                    new WorkExperienceDto
                     {
-                        company = "Tech Corp",
-                        position = "Senior Software Engineer",
-                        startDate = "2020-01-01",
-                        endDate = (string?)null,
-                        isCurrent = true,
-                        description = "Led development of web applications",
-                        achievements = new[] { "Improved performance by 50%", "Led team of 5 developers" }
+                        Company = "TechCorp Ltd",
+                        Position = "Senior .NET Developer",
+                        StartDate = new DateTime(2020, 1, 1),
+                        EndDate = null,
+                        IsCurrent = true,
+                        Description = "Led development of scalable web applications using C#, ASP.NET Core, and Entity Framework. Managed a team of 5 developers and implemented microservices architecture.",
+                        Achievements = new List<string> { "Improved application performance by 50%", "Led team of 5 developers", "Implemented CI/CD pipelines" }
+                    },
+                    new WorkExperienceDto
+                    {
+                        Company = "StartupXYZ",
+                        Position = ".NET Developer",
+                        StartDate = new DateTime(2018, 6, 1),
+                        EndDate = new DateTime(2019, 12, 31),
+                        IsCurrent = false,
+                        Description = "Developed RESTful APIs using ASP.NET Web API and worked with SQL Server and Entity Framework Core.",
+                        Achievements = new List<string> { "Built 10+ RESTful APIs", "Improved database performance by 30%" }
                     }
                 },
-                education = new[]
+                Education = new List<EducationDto>
                 {
-                    new
+                    new EducationDto
                     {
-                        institution = "University of Technology",
-                        degree = "Bachelor of Science",
-                        fieldOfStudy = "Computer Science",
-                        startDate = "2015-09-01",
-                        endDate = "2019-06-01",
-                        gpa = 3.8m
+                        Institution = "University of Technology",
+                        Degree = "Bachelor of Science",
+                        FieldOfStudy = "Computer Science",
+                        StartDate = new DateTime(2014, 9, 1),
+                        EndDate = new DateTime(2018, 6, 1),
+                        GPA = 3.8m
                     }
                 },
-                skills = new[]
+                Skills = new List<SkillDto>
                 {
-                    new { name = "C#", level = "Advanced", category = "Technical", yearsOfExperience = 5 },
-                    new { name = "JavaScript", level = "Advanced", category = "Technical", yearsOfExperience = 4 },
-                    new { name = "SQL", level = "Intermediate", category = "Technical", yearsOfExperience = 3 }
+                    new SkillDto { Name = "C#", Level = SkillLevel.Advanced, Category = SkillCategory.Technical, YearsOfExperience = 5 },
+                    new SkillDto { Name = "ASP.NET Core", Level = SkillLevel.Advanced, Category = SkillCategory.Technical, YearsOfExperience = 4 },
+                    new SkillDto { Name = "Entity Framework", Level = SkillLevel.Advanced, Category = SkillCategory.Technical, YearsOfExperience = 4 },
+                    new SkillDto { Name = "SQL Server", Level = SkillLevel.Advanced, Category = SkillCategory.Technical, YearsOfExperience = 4 },
+                    new SkillDto { Name = "JavaScript", Level = SkillLevel.Intermediate, Category = SkillCategory.Technical, YearsOfExperience = 3 },
+                    new SkillDto { Name = "Azure", Level = SkillLevel.Intermediate, Category = SkillCategory.Technical, YearsOfExperience = 2 }
                 },
-                certifications = new[]
+                Certifications = new List<CertificationDto>
                 {
-                    new
+                    new CertificationDto
                     {
-                        name = "AWS Certified Developer",
-                        issuingOrganization = "Amazon Web Services",
-                        issueDate = "2022-01-01",
-                        expiryDate = "2025-01-01",
-                        credentialId = "AWS-DEV-123456"
+                        Name = "Microsoft Certified: Azure Developer Associate",
+                        IssuingOrganization = "Microsoft",
+                        IssueDate = new DateTime(2022, 1, 15),
+                        ExpiryDate = new DateTime(2024, 1, 15),
+                        CredentialId = "AZ-204"
                     }
                 },
-                projects = new[]
+                Projects = new List<ProjectDto>
                 {
-                    new
+                    new ProjectDto
                     {
-                        name = "E-commerce Platform",
-                        description = "Full-stack web application for online shopping",
-                        startDate = "2021-01-01",
-                        endDate = "2021-06-01",
-                        url = "https://github.com/johndoe/ecommerce",
-                        technologies = new[] { "React", "Node.js", "MongoDB" }
+                        Name = "E-commerce Platform",
+                        Description = "Built a full-stack e-commerce platform using .NET Core, React, and Azure",
+                        StartDate = new DateTime(2021, 1, 1),
+                        EndDate = new DateTime(2021, 6, 1),
+                        Url = "https://github.com/johnsmith/ecommerce",
+                        Technologies = new List<string> { "C#", "ASP.NET Core", "React", "SQL Server", "Azure" }
                     }
                 }
             };

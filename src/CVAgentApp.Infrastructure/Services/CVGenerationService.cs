@@ -5,6 +5,8 @@ using CVAgentApp.Core.Entities;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using CVAgentApp.Core.Enums;
+using CVAgentApp.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CVAgentApp.Infrastructure.Services;
 
@@ -15,19 +17,22 @@ public class CVGenerationService : ICVGenerationService
     private readonly IDocumentProcessingService _documentProcessingService;
     private readonly IFileStorageService _fileStorageService;
     private readonly ISessionService _sessionService;
+    private readonly ApplicationDbContext _context;
 
     public CVGenerationService(
         ILogger<CVGenerationService> logger,
         IOpenAIService openAIService,
         IDocumentProcessingService documentProcessingService,
         IFileStorageService fileStorageService,
-        ISessionService sessionService)
+        ISessionService sessionService,
+        ApplicationDbContext context)
     {
         _logger = logger;
         _openAIService = openAIService;
         _documentProcessingService = documentProcessingService;
         _fileStorageService = fileStorageService;
         _sessionService = sessionService;
+        _context = context;
     }
 
     public async Task<CVGenerationResponse> GenerateCVAsync(CVGenerationRequest request)
@@ -58,9 +63,9 @@ public class CVGenerationService : ICVGenerationService
             var coverLetter = await _openAIService.GenerateCoverLetterAsync(candidateAnalysisResponse, jobAnalysisResponse);
             _logger.LogInformation("Cover letter generated successfully");
 
-            // Step 6: Create session
-            var candidateId = Guid.NewGuid(); // In real app, this would be from user authentication
-            var jobPostingId = Guid.NewGuid(); // In real app, this would be from job posting storage
+            // Step 6: Create session (stateless - no database storage needed)
+            var candidateId = Guid.NewGuid(); // Generate IDs for reference only
+            var jobPostingId = Guid.NewGuid();
             var session = await _sessionService.CreateSessionAsync(candidateId, jobPostingId);
 
             // Step 7: Generate and store documents
@@ -314,4 +319,5 @@ public class CVGenerationService : ICVGenerationService
             throw;
         }
     }
+
 }

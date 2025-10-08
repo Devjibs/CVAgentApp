@@ -35,8 +35,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(200);
             entity.Property(e => e.Phone).HasMaxLength(20);
             entity.Property(e => e.Location).HasMaxLength(200);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         // WorkExperience configuration
@@ -108,8 +108,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Company).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Location).HasMaxLength(200);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         // RequiredSkill configuration
@@ -158,7 +158,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.OriginalFileName).IsRequired().HasMaxLength(200);
             entity.Property(e => e.BlobUrl).HasMaxLength(500);
             entity.Property(e => e.ContentType).HasMaxLength(50);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.HasOne(e => e.Candidate)
                 .WithMany()
                 .HasForeignKey(e => e.CandidateId)
@@ -178,7 +178,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.SessionToken).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.HasOne(e => e.Candidate)
                 .WithMany()
                 .HasForeignKey(e => e.CandidateId)

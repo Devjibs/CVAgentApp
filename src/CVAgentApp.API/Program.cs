@@ -39,7 +39,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Add Entity Framework
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), 
+        b => b.MigrationsAssembly("CVAgentApp.API")));
 
 // Add HTTP client for external requests
 builder.Services.AddHttpClient();

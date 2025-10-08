@@ -1,5 +1,6 @@
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Core.DTOs;
+using CVAgentApp.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CVAgentApp.API.Controllers;
@@ -80,21 +81,22 @@ public class CVAgentController : ControllerBase
                 });
             }
 
-            // Execute multi-agent workflow
-            var result = await _orchestrator.ExecuteFullWorkflowAsync(request);
+            // Execute CV generation using the service directly (with mock data)
+            var result = await _cvGenerationService.GenerateCVAsync(request);
 
-            if (!result.Success)
+            if (result.Status == CVGenerationStatus.Failed)
             {
                 _logger.LogError("CV generation failed: {Error}", result.ErrorMessage);
                 return StatusCode(500, new ErrorResponse
                 {
                     Error = result.ErrorMessage ?? "CV generation failed",
-                    Code = "GENERATION_FAILED"
+                    Code = "GENERATION_FAILED",
+                    Details = new Dictionary<string, object>{ { "error", result } }
                 });
             }
 
-            _logger.LogInformation("CV generation completed successfully for session {SessionId}", result.Data?.SessionId);
-            return Ok(result.Data);
+            _logger.LogInformation("CV generation completed successfully for session {SessionId}", result.SessionId);
+            return Ok(result);
         }
         catch (Exception ex)
         {
@@ -102,7 +104,12 @@ public class CVAgentController : ControllerBase
             return StatusCode(500, new ErrorResponse
             {
                 Error = "An unexpected error occurred",
-                Code = "INTERNAL_ERROR"
+                Code = "INTERNAL_ERROR",
+                Details = new Dictionary<string, object>
+                {
+                    { "ExceptionType", ex.GetType().Name },
+                    { "StackTrace", ex.StackTrace }
+                }
             });
         }
     }

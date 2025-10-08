@@ -36,7 +36,7 @@ public class GeneratedDocument
     public JobPosting JobPosting { get; set; } = null!;
 
     public Guid SessionId { get; set; }
-    public DocumentSession Session { get; set; } = null!;
+    public Session Session { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
@@ -45,30 +45,4 @@ public class GeneratedDocument
     public DateTime? ExpiresAt { get; set; }
 }
 
-public class DocumentSession
-{
-    public Guid Id { get; set; }
-
-    [Required]
-    [MaxLength(100)]
-    public string SessionToken { get; set; } = string.Empty;
-
-    public Guid CandidateId { get; set; }
-    public Candidate Candidate { get; set; } = null!;
-
-    public Guid JobPostingId { get; set; }
-    public JobPosting JobPosting { get; set; } = null!;
-
-    public SessionStatus Status { get; set; }
-
-    public string? ProcessingLog { get; set; }
-
-    public List<GeneratedDocument> GeneratedDocuments { get; set; } = new();
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime? CompletedAt { get; set; }
-
-    public DateTime ExpiresAt { get; set; }
-}
 
