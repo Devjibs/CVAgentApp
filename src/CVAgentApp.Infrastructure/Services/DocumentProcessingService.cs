@@ -1,7 +1,7 @@
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Core.Entities;
-using Microsoft.Extensions.Logging;
 using CVAgentApp.Core.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace CVAgentApp.Infrastructure.Services;
 
@@ -59,9 +59,9 @@ public class DocumentProcessingService : IDocumentProcessingService
 
         var formattedContent = type switch
         {
-            CVAgentApp.Core.Entities.DocumentType.CV => FormatCV(content),
-            CVAgentApp.Core.Entities.DocumentType.CoverLetter => FormatCoverLetter(content),
-            CVAgentApp.Core.Entities.DocumentType.Portfolio => FormatPortfolio(content),
+            DocumentType.CV => FormatCV(content),
+            DocumentType.CoverLetter => FormatCoverLetter(content),
+            DocumentType.Portfolio => FormatPortfolio(content),
             _ => content
         };
 

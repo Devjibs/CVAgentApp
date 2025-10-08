@@ -367,7 +367,7 @@ public class MultiAgentOrchestrator : IMultiAgentOrchestrator
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error cancelling workflow");
-            return new AgentResult<bool>
+            return new AgentResult<CancellationResult>
             {
                 Success = false,
                 ErrorMessage = ex.Message

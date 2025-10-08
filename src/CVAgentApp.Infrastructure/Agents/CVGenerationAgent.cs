@@ -258,7 +258,6 @@ public class CVGenerationAgent : ICVGenerationAgent
             switch (type)
             {
                 case DocumentType.CV:
-                case DocumentType.Resume:
                     documentBytes = await _documentProcessor.GeneratePDFAsync(content);
                     break;
                 case DocumentType.CoverLetter:

@@ -257,7 +257,7 @@ public class DocumentQualityGuardrail : IDocumentQualityGuardrail
         {
             DocumentType.CV => new List<string> { "Contact", "Experience", "Education", "Skills" },
             DocumentType.CoverLetter => new List<string> { "Introduction", "Body", "Conclusion" },
-            DocumentType.Resume => new List<string> { "Contact", "Summary", "Experience", "Education" },
+            DocumentType.Portfolio => new List<string> { "Contact", "Summary", "Experience", "Education" },
             _ => new List<string>()
         };
     }

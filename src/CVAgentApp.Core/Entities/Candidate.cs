@@ -160,11 +160,13 @@ public class Session
     public Guid Id { get; set; }
     public string SessionToken { get; set; } = string.Empty;
     public Guid CandidateId { get; set; }
+    public Candidate Candidate { get; set; } = null!;
     public Guid JobPostingId { get; set; }
+    public JobPosting JobPosting { get; set; } = null!;
     public SessionStatus Status { get; set; }
     public string? ProcessingLog { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
     public DateTime ExpiresAt { get; set; }
-    public List<GeneratedDocument> Documents { get; set; } = new();
+    public List<GeneratedDocument> GeneratedDocuments { get; set; } = new();
 }

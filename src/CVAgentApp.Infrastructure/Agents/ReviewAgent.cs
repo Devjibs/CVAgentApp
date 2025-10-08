@@ -4,7 +4,6 @@ using CVAgentApp.Core.Entities;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using CVAgentApp.Core.Enums;
-using CVAgentApp.Core.Interfaces;
 
 namespace CVAgentApp.Infrastructure.Agents;
 
@@ -199,16 +198,21 @@ public class ReviewAgent : IReviewAgent
             var result = await _openAIService.AnalyzeCandidateAsync(truthfulnessPrompt);
             var isTruthful = result.Trim().ToLower() == "true";
 
-            return new AgentResult<bool>
+            return new AgentResult<ValidationResult>
             {
                 Success = true,
-                Data = isTruthful
+                Data = new ValidationResult
+                {
+                    IsValid = isTruthful,
+                    Issues = isTruthful ? new List<string>() : new List<string> { "Generated CV contains fabricated content" },
+                    Recommendations = isTruthful ? new List<string>() : new List<string> { "Review and remove fabricated content" }
+                }
             };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error validating truthfulness");
-            return new AgentResult<bool>
+            return new AgentResult<ValidationResult>
             {
                 Success = false,
                 ErrorMessage = ex.Message

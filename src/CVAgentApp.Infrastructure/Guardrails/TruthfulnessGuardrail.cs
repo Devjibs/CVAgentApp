@@ -57,20 +57,20 @@ public class TruthfulnessGuardrail : ITruthfulnessGuardrail
             _logger.LogInformation("Validating truthfulness of generated content");
 
             var fabricatedContent = await DetectFabricatedSkillsAsync(originalContent, generatedContent);
-            if (fabricatedContent.Any())
+            if (fabricatedContent.TripwireTriggered)
             {
-                _logger.LogWarning("Fabricated content detected: {FabricatedContent}", string.Join(", ", fabricatedContent));
+                _logger.LogWarning("Fabricated content detected: {ViolationType}", fabricatedContent.ViolationType);
 
                 return new GuardrailResult
                 {
                     TripwireTriggered = true,
                     ViolationType = "FabricatedContent",
-                    Message = $"Fabricated content detected: {string.Join(", ", fabricatedContent)}",
+                    Message = $"Fabricated content detected: {fabricatedContent.Message}",
                     AllowExecution = false,
                     Details = new Dictionary<string, object>
                     {
-                        ["fabricatedContent"] = fabricatedContent,
-                        ["fabricatedCount"] = fabricatedContent.Count
+                        ["fabricatedContent"] = fabricatedContent.Details,
+                        ["violationType"] = fabricatedContent.ViolationType
                     },
                     Recommendations = new List<string>
                     {
