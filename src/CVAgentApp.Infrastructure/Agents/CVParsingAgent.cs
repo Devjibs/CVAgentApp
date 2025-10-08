@@ -120,7 +120,7 @@ public class CVParsingAgent : ICVParsingAgent
             }
 
             // Use OpenAI to analyze the CV content
-            var analysisPrompt = $"""
+            var analysisPrompt = $$"""
                 Analyze the following CV and extract structured information. Return a JSON response with the following structure:
                 {{
                     "firstName": "string",
@@ -248,7 +248,7 @@ public class CVParsingAgent : ICVParsingAgent
     {
         try
         {
-            var skillsPrompt = $"""
+            var skillsPrompt = $$"""
                 Extract all technical and soft skills from the following CV content. 
                 Return a JSON array of skill names.
                 
@@ -283,7 +283,7 @@ public class CVParsingAgent : ICVParsingAgent
     {
         try
         {
-            var experiencePrompt = $"""
+            var experiencePrompt = $$"""
                 Extract work experience from the following CV content.
                 Return a JSON array of work experience objects with company, position, dates, and descriptions.
                 

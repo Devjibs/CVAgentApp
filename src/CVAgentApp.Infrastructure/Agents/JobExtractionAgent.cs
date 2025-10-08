@@ -121,7 +121,7 @@ public class JobExtractionAgent : IJobExtractionAgent
             }
 
             // Use OpenAI with web search to analyze the job posting
-            var analysisPrompt = $"""
+            var analysisPrompt = $$"""
                 Analyze the following job posting and extract structured information. Use web search to gather additional company information if needed.
                 Return a JSON response with the following structure:
                 {{
@@ -220,7 +220,7 @@ public class JobExtractionAgent : IJobExtractionAgent
         {
             _logger.LogInformation("Researching company: {CompanyName}", companyName);
 
-            var researchPrompt = $"""
+            var researchPrompt = $$"""
                 Research the following company and provide detailed information.
                 Use web search to gather current information about the company.
                 Return a JSON response with the following structure:
@@ -275,7 +275,7 @@ public class JobExtractionAgent : IJobExtractionAgent
     {
         try
         {
-            var skillsPrompt = $"""
+            var skillsPrompt = $$"""
                 Extract all required skills and technologies from the following job description.
                 Return a JSON array of skill names.
                 

@@ -72,7 +72,7 @@ public interface IMultiAgentOrchestrator
 {
     Task<AgentResult<CVGenerationResponse>> ExecuteFullWorkflowAsync(CVGenerationRequest request);
     Task<AgentResult<SessionStatusResponse>> GetWorkflowStatusAsync(string sessionToken);
-    Task<AgentResult<bool>> CancelWorkflowAsync(string sessionToken);
+    Task<AgentResult<CancellationResult>> CancelWorkflowAsync(string sessionToken);
 }
 
 /// <summary>
@@ -125,4 +125,23 @@ public class ReviewResult
     public List<string> FabricatedContent { get; set; } = new();
     public List<string> Recommendations { get; set; } = new();
     public bool RequiresHumanReview { get; set; }
+}
+
+/// <summary>
+/// Result of validation operation
+/// </summary>
+public class ValidationResult
+{
+    public bool IsValid { get; set; }
+    public List<string> Issues { get; set; } = new();
+    public List<string> Recommendations { get; set; } = new();
+}
+
+/// <summary>
+/// Result of cancellation operation
+/// </summary>
+public class CancellationResult
+{
+    public bool WasCancelled { get; set; }
+    public string? Message { get; set; }
 }
