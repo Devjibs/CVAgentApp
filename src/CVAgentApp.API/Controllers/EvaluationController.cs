@@ -3,6 +3,7 @@ using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.API.Controllers;
 
@@ -205,38 +206,6 @@ public class EvaluationController : ControllerBase
             return StatusCode(500, new ErrorResponse
             {
                 Error = "An error occurred while retrieving evaluation history",
-                Code = "RETRIEVAL_FAILED"
-            });
-        }
-    }
-
-    /// <summary>
-    /// Get performance metrics
-    /// </summary>
-    /// <param name="fromDate">Start date</param>
-    /// <param name="toDate">End date</param>
-    /// <returns>Performance metrics</returns>
-    [HttpGet("metrics")]
-    [ProducesResponseType(typeof(EvaluationMetrics), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<EvaluationMetrics>> GetPerformanceMetrics(
-        [FromQuery] DateTime fromDate,
-        [FromQuery] DateTime toDate)
-    {
-        try
-        {
-            _logger.LogInformation("Getting performance metrics from {FromDate} to {ToDate}", fromDate, toDate);
-
-            var metrics = await _evaluationService.GetPerformanceMetricsAsync(fromDate, toDate);
-
-            return Ok(metrics);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting performance metrics");
-            return StatusCode(500, new ErrorResponse
-            {
-                Error = "An error occurred while retrieving performance metrics",
                 Code = "RETRIEVAL_FAILED"
             });
         }

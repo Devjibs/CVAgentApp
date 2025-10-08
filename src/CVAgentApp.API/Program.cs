@@ -1,8 +1,8 @@
 using CVAgentApp.Core.Interfaces;
-using CVAgentApp.Infrastructure.Data;
-using CVAgentApp.Infrastructure.Services;
 using CVAgentApp.Infrastructure.Agents;
+using CVAgentApp.Infrastructure.Data;
 using CVAgentApp.Infrastructure.Guardrails;
+using CVAgentApp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 

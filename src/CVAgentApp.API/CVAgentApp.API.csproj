@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CVAgentApp.Core\CVAgentApp.Core.csproj" />
+    <ProjectReference Include="..\CVAgentApp.Infrastructure\CVAgentApp.Infrastructure.csproj" />
     <!-- <ProjectReference Include="..\CVAgentApp.Infrastructure\CVAgentApp.Infrastructure.csproj" /> -->
   </ItemGroup>
 

@@ -1,7 +1,6 @@
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace CVAgentApp.API.Controllers;
 
@@ -348,11 +347,3 @@ public class SuccessResponse
     public Dictionary<string, object>? Data { get; set; }
 }
 
-/// <summary>
-/// Job analysis request model
-/// </summary>
-public class JobAnalysisRequest
-{
-    public string JobUrl { get; set; } = string.Empty;
-    public string? CompanyName { get; set; }
-}
