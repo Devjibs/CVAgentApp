@@ -1,196 +1,286 @@
-# CV Agent Desktop - AI-Powered CV Generation
+# CV Agent App - AI-Powered CV Generation System
 
-CV Agent Desktop is a standalone Windows application that uses OpenAI's AgentKit and Agents SDK to automatically generate tailored CVs and cover letters based on job postings. The application analyzes uploaded CVs, extracts job requirements from URLs, and creates personalized documents that match specific roles while maintaining factual accuracy.
+A comprehensive .NET application that uses OpenAI's agentic platform to automatically generate tailored CVs and cover letters based on job postings. The system implements a multi-agent architecture with comprehensive guardrails for safety and truthfulness.
 
-## Features
+## 🚀 Features
 
-- **AI-Powered CV Analysis**: Extracts structured information from uploaded CVs (PDF, DOCX)
-- **Job Posting Analysis**: Automatically extracts requirements and company information from job URLs
-- **Tailored Document Generation**: Creates CVs and cover letters that match specific job requirements
-- **Company Research**: Uses web search to gather company information for personalized cover letters
-- **Document Preview & Download**: Preview generated documents before downloading
-- **Session Management**: Track generation progress and manage multiple sessions
-- **Security & Compliance**: Implements guardrails to prevent hallucinations and ensure data privacy
+### Core Functionality
+- **Multi-Agent Workflow**: Orchestrated agents for CV parsing, job extraction, matching, and generation
+- **AI-Powered Analysis**: Uses OpenAI's Responses API with web search capabilities
+- **Document Processing**: Supports PDF and Word document parsing and generation
+- **Tailored Output**: Generates job-specific CVs and cover letters
+- **Session Management**: Tracks workflow progress and maintains state
 
-## System Requirements
+### Safety & Compliance
+- **Input Guardrails**: Validates job URLs, CV files, and content
+- **Output Guardrails**: Ensures truthfulness, quality, and compliance
+- **Discrimination Prevention**: Prevents bias and protected attribute inclusion
+- **ATS Compatibility**: Optimizes documents for Applicant Tracking Systems
 
-- Windows 10 or later
-- .NET 9.0 Runtime (included in the application)
-- Internet connection for AI processing
-- Minimum 4GB RAM
-- 500MB free disk space
+### Monitoring & Evaluation
+- **Performance Metrics**: Tracks agent execution times and success rates
+- **Quality Evaluation**: Automated assessment of generated documents
+- **System Health**: Comprehensive health checks and monitoring
+- **Error Reporting**: Detailed error tracking and analysis
 
-## Installation
+## 🏗️ Architecture
 
-### Option 1: Pre-built Installer
-1. Download the latest release from the releases page
-2. Run `install.bat` to install the application
-3. Double-click `CVAgentApp.Desktop.exe` to start the application
+### Multi-Agent System
+The application implements a sophisticated multi-agent architecture following OpenAI's Agents SDK patterns:
 
-### Option 2: Build from Source
-1. Clone the repository:
+1. **CV Parsing Agent**: Extracts and structures candidate information
+2. **Job Extraction Agent**: Fetches and analyzes job postings with web search
+3. **Matching Agent**: Compares candidate profile with job requirements
+4. **CV Generation Agent**: Creates tailored CVs and cover letters
+5. **Review Agent**: Validates generated documents for quality and truthfulness
+6. **Multi-Agent Orchestrator**: Coordinates the entire workflow
+
+### Guardrail System
+Comprehensive safety system with multiple guardrail types:
+
+- **Job Posting Guardrail**: Validates job URLs and content
+- **CV Content Guardrail**: Ensures CV files and content quality
+- **Truthfulness Guardrail**: Prevents hallucination and fabricated content
+- **Document Quality Guardrail**: Validates output quality and ATS compatibility
+- **Compliance Guardrail**: Ensures discrimination law compliance
+
+### Technology Stack
+- **Backend**: ASP.NET Core 9.0 with Entity Framework Core
+- **Database**: SQL Server with comprehensive entity relationships
+- **AI Integration**: OpenAI Responses API with built-in tools
+- **Document Processing**: PDF and Word document handling
+- **File Storage**: Local file system (configurable for cloud storage)
+- **Monitoring**: Comprehensive logging and metrics collection
+
+## 📁 Project Structure
+
+```
+CV-Agent-App/
+├── src/
+│   ├── CVAgentApp.API/                 # Web API layer
+│   │   ├── Controllers/               # API controllers
+│   │   ├── Program.cs                 # Application configuration
+│   │   └── appsettings.json          # Configuration settings
+│   ├── CVAgentApp.Core/              # Core business logic
+│   │   ├── Entities/                 # Domain entities
+│   │   ├── DTOs/                     # Data transfer objects
+│   │   └── Interfaces/               # Service contracts
+│   ├── CVAgentApp.Infrastructure/    # Infrastructure layer
+│   │   ├── Agents/                   # Agent implementations
+│   │   ├── Guardrails/              # Guardrail implementations
+│   │   ├── Services/                # Service implementations
+│   │   └── Data/                    # Data access layer
+│   └── CVAgentApp.Desktop/          # Desktop application
+└── README.md                        # This file
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+- .NET 9.0 SDK
+- SQL Server (LocalDB or full instance)
+- OpenAI API Key
+- Visual Studio 2022 or VS Code
+
+### Installation
+
+1. **Clone the repository**
    ```bash
    git clone <repository-url>
    cd CV-Agent-App
    ```
 
-2. Build the application:
-   ```bash
-   build.bat
+2. **Configure the application**
+   ```json
+   // appsettings.json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CVAgentAppDb;Trusted_Connection=true;MultipleActiveResultSets=true"
+     },
+     "OpenAI": {
+       "ApiKey": "YOUR_OPENAI_API_KEY_HERE"
+     }
+   }
    ```
 
-3. The built application will be in the `dist` folder
-
-## Usage
-
-1. **Start the Application**: Double-click `CVAgentApp.Desktop.exe`
-2. **Upload CV**: Select a PDF or Word document containing your CV
-3. **Enter Job URL**: Provide the URL of the job posting you want to apply for
-4. **Optional Company Name**: Specify the company name if not auto-detectable
-5. **Generate**: Click "Generate Tailored CV & Cover Letter"
-6. **Download**: Preview and download the generated documents
-
-## Architecture
-
-The application follows a clean architecture pattern with the following layers:
-
-- **CVAgentApp.Desktop**: Windows desktop application with embedded web server
-- **CVAgentApp.API**: ASP.NET Core Web API with controllers and services
-- **CVAgentApp.Core**: Domain entities, DTOs, and interfaces
-- **CVAgentApp.Infrastructure**: Data access, external services, and implementations
-
-## Technology Stack
-
-- **Desktop**: Windows Forms with embedded web server
-- **Backend**: ASP.NET Core 9.0, Entity Framework Core, OpenAI API
-- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
-- **Database**: SQL Server LocalDB (embedded)
-- **Storage**: Local file system for document storage
-- **Document Processing**: iTextSharp (PDF), DocumentFormat.OpenXml (Word), QuestPDF
-- **AI Services**: OpenAI GPT-4o for analysis and generation
-
-## Configuration
-
-The application uses the following configuration (in `appsettings.json`):
-
-```json
-{
-  "OpenAI": {
-    "ApiKey": "your-openai-api-key-here"
-  },
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CVAgentAppDb;Trusted_Connection=true;MultipleActiveResultSets=true"
-  }
-}
-```
-
-## API Endpoints
-
-The embedded web server provides the following endpoints:
-
-### CV Generation
-- `POST /api/CVGeneration/generate` - Generate tailored CV and cover letter
-- `GET /api/CVGeneration/session/{sessionToken}` - Get session status
-- `GET /api/CVGeneration/download/{documentId}` - Download generated document
-- `DELETE /api/CVGeneration/session/{sessionToken}` - Delete session
-
-### Analysis
-- `POST /api/CVGeneration/analyze-candidate` - Analyze CV file
-- `POST /api/CVGeneration/analyze-job` - Analyze job posting
-
-## Security Features
-
-- **Input Validation**: File type and size validation
-- **Data Encryption**: Encrypted storage of sensitive documents
-- **Session Management**: Secure session tokens with expiration
-- **Guardrails**: AI safety checks to prevent hallucinations
-- **Data Retention**: Automatic cleanup of expired sessions and documents
-
-## Development
-
-### Project Structure
-
-```
-src/
-├── CVAgentApp.Desktop/        # Desktop application
-│   ├── Services/              # Web server service
-│   ├── UI/                    # Windows Forms UI
-│   └── wwwroot/               # Web UI files
-├── CVAgentApp.API/            # Web API project
-│   ├── Controllers/           # API controllers
-│   └── Services/              # Background services
-├── CVAgentApp.Core/           # Domain layer
-│   ├── Entities/              # Domain entities
-│   ├── DTOs/                  # Data transfer objects
-│   └── Interfaces/            # Service interfaces
-└── CVAgentApp.Infrastructure/ # Infrastructure layer
-    ├── Data/                  # Entity Framework context
-    └── Services/              # Service implementations
-```
-
-### Building the Application
-
-1. **Restore packages**:
+3. **Install dependencies**
    ```bash
    dotnet restore
    ```
 
-2. **Build the solution**:
+4. **Create and migrate database**
    ```bash
-   dotnet build --configuration Release
+   dotnet ef database update --project src/CVAgentApp.Infrastructure --startup-project src/CVAgentApp.API
    ```
 
-3. **Publish the desktop application**:
+5. **Run the application**
    ```bash
-   dotnet publish "src\CVAgentApp.Desktop\CVAgentApp.Desktop.csproj" --configuration Release --runtime win-x64 --self-contained true
+   dotnet run --project src/CVAgentApp.API
    ```
 
-4. **Run the build script**:
-   ```bash
-   build.bat
-   ```
+### API Endpoints
 
-### Adding New Features
+#### CV Generation
+- `POST /api/cvagent/generate` - Generate tailored CV and cover letter
+- `GET /api/cvagent/status/{sessionToken}` - Get workflow status
+- `POST /api/cvagent/cancel/{sessionToken}` - Cancel workflow
+- `GET /api/cvagent/download/{documentId}` - Download generated document
 
-1. **Domain Changes**: Update entities in `CVAgentApp.Core`
-2. **Database**: Create migrations for schema changes
-3. **Services**: Implement business logic in `CVAgentApp.Infrastructure`
-4. **API**: Add controllers and endpoints in `CVAgentApp.API`
-5. **Desktop**: Update Windows Forms UI in `CVAgentApp.Desktop`
+#### Analysis
+- `POST /api/cvagent/analyze-job` - Analyze job posting
+- `POST /api/cvagent/analyze-candidate` - Analyze candidate CV
 
-## Deployment
+#### Evaluation & Monitoring
+- `POST /api/evaluation/workflow/{sessionId}` - Evaluate workflow
+- `POST /api/evaluation/document-quality` - Evaluate document quality
+- `POST /api/evaluation/truthfulness` - Evaluate truthfulness
+- `GET /api/evaluation/health` - Get system health
+- `GET /api/evaluation/metrics` - Get performance metrics
 
-The application is designed to be distributed as a standalone executable:
+## 🔧 Configuration
 
-1. **Build the application** using the build script
-2. **Package the distribution** folder
-3. **Distribute to users** who can install and run locally
+### OpenAI Configuration
+```json
+{
+  "OpenAI": {
+    "ApiKey": "your-api-key-here",
+    "Model": "gpt-4o",
+    "Temperature": 0.7,
+    "MaxTokens": 4000
+  }
+}
+```
 
-No server hosting or cloud deployment is required.
+### Database Configuration
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=CVAgentAppDb;Trusted_Connection=true;MultipleActiveResultSets=true"
+  }
+}
+```
 
-## Monitoring and Logging
+### File Storage Configuration
+```json
+{
+  "AzureStorage": {
+    "ConnectionString": "UseDevelopmentStorage=true",
+    "ContainerName": "cv-agent-documents"
+  }
+}
+```
 
-- **Serilog**: Structured logging with console and file outputs
-- **Application Insights**: Optional Azure monitoring integration
-- **Health Checks**: Built-in health check endpoints
-- **Session Cleanup**: Automatic cleanup of expired sessions
+## 🛡️ Security & Compliance
 
-## Troubleshooting
+### Data Privacy
+- Encrypted file storage for uploaded CVs
+- Automatic data purging after generation
+- No logging of sensitive personal information
+- GDPR-compliant data handling
 
-### Common Issues
+### Guardrails
+- **Input Validation**: Comprehensive validation of all inputs
+- **Output Verification**: Multi-layer output validation
+- **Truthfulness**: Prevents fabrication of skills or experience
+- **Compliance**: Ensures adherence to discrimination laws
+- **Quality Assurance**: Maintains professional document standards
 
-1. **Application won't start**: Check that .NET 9.0 Runtime is installed
-2. **AI processing fails**: Verify OpenAI API key is configured correctly
-3. **Database errors**: Ensure SQL Server LocalDB is installed
-4. **File upload issues**: Check file size and format requirements
+### Error Handling
+- Comprehensive error logging and monitoring
+- Graceful failure handling with user feedback
+- Automatic retry mechanisms for transient failures
+- Detailed error reporting for debugging
 
-### Logs
+## 📊 Monitoring & Evaluation
 
-Application logs are stored in:
-- Console output (for debugging)
-- `logs/cv-agent-{date}.txt` (file logging)
+### Performance Metrics
+- Agent execution times
+- Success/failure rates
+- Guardrail trigger frequency
+- System resource utilization
 
-## Contributing
+### Quality Evaluation
+- Document quality scoring
+- Truthfulness verification
+- ATS compatibility assessment
+- Professional language analysis
+
+### Health Monitoring
+- Database connectivity
+- OpenAI API status
+- File storage availability
+- Agent operational status
+
+## 🔄 Workflow Process
+
+1. **Upload CV**: User uploads their CV (PDF/Word)
+2. **Provide Job URL**: User provides job posting URL
+3. **CV Parsing**: Agent extracts candidate information
+4. **Job Analysis**: Agent fetches and analyzes job requirements
+5. **Matching**: Agent compares candidate with job requirements
+6. **Generation**: Agent creates tailored CV and cover letter
+7. **Review**: Agent validates output for quality and truthfulness
+8. **Delivery**: User receives generated documents
+
+## 🧪 Testing
+
+### Unit Tests
+```bash
+dotnet test
+```
+
+### Integration Tests
+```bash
+dotnet test --filter Category=Integration
+```
+
+### Load Testing
+```bash
+# Use tools like Apache Bench or Artillery
+ab -n 100 -c 10 http://localhost:5000/api/cvagent/generate
+```
+
+## 🚀 Deployment
+
+### Docker Deployment
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+COPY . /app
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT ["dotnet", "CVAgentApp.API.dll"]
+```
+
+### Azure Deployment
+```bash
+az webapp deployment source config-zip --resource-group myResourceGroup --name myAppName --src myapp.zip
+```
+
+### Environment Variables
+```bash
+export OpenAI__ApiKey="your-api-key"
+export ConnectionStrings__DefaultConnection="your-connection-string"
+export AzureStorage__ConnectionString="your-storage-connection"
+```
+
+## 📈 Performance Optimization
+
+### Caching
+- Redis caching for frequently accessed data
+- Response caching for static content
+- Session state management
+
+### Scaling
+- Horizontal scaling with load balancers
+- Database connection pooling
+- Async/await patterns throughout
+
+### Monitoring
+- Application Insights integration
+- Custom metrics collection
+- Performance profiling
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -198,23 +288,27 @@ Application logs are stored in:
 4. Add tests for new functionality
 5. Submit a pull request
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Support
+## 🆘 Support
 
 For support and questions:
 - Create an issue in the repository
-- Check the troubleshooting section
-- Review the application logs
+- Contact the development team
+- Check the documentation
 
-## Roadmap
+## 🔮 Future Enhancements
 
-- [ ] Multi-language support
-- [ ] LinkedIn integration
-- [ ] Interview preparation features
-- [ ] ATS scoring simulation
-- [ ] Analytics dashboard
-- [ ] Mobile app support
-- [ ] Cloud sync capabilities
+- Multi-language support
+- LinkedIn integration
+- Interview preparation features
+- ATS scoring simulation
+- Analytics dashboard
+- Mobile application
+- Advanced AI models integration
+
+---
+
+**Built with ❤️ using .NET 9.0 and OpenAI's Agentic Platform**

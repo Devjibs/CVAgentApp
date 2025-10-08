@@ -169,3 +169,41 @@ public enum SkillCategory
     Language = 3,
     Industry = 4
 }
+
+public enum DocumentType
+{
+    CV = 1,
+    CoverLetter = 2,
+    Resume = 3
+}
+
+public enum DocumentStatus
+{
+    Pending = 1,
+    Processing = 2,
+    Completed = 3,
+    Failed = 4
+}
+
+public class Session
+{
+    public Guid Id { get; set; }
+    public string SessionToken { get; set; } = string.Empty;
+    public Guid CandidateId { get; set; }
+    public Guid JobPostingId { get; set; }
+    public SessionStatus Status { get; set; }
+    public string? ProcessingLog { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public List<GeneratedDocument> Documents { get; set; } = new();
+}
+
+public enum SessionStatus
+{
+    Created = 1,
+    Processing = 2,
+    Completed = 3,
+    Failed = 4,
+    Expired = 5
+}

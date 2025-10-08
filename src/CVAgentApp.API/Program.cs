@@ -1,25 +1,60 @@
-// using CVAgentApp.Core.Interfaces;
-// using CVAgentApp.Infrastructure.Data;
-// using CVAgentApp.Infrastructure.Services;
-// using Microsoft.EntityFrameworkCore;
+using CVAgentApp.Core.Interfaces;
+using CVAgentApp.Infrastructure.Data;
+using CVAgentApp.Infrastructure.Services;
+using CVAgentApp.Infrastructure.Agents;
+using CVAgentApp.Infrastructure.Guardrails;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "CV Agent API",
+        Version = "v1",
+        Description = "AI-powered CV generation and job matching API"
+    });
+});
 
-// Add Entity Framework (commented out for now)
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Add Entity Framework
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add custom services (commented out for now due to compilation issues)
-// builder.Services.AddScoped<ICVGenerationService, CVGenerationService>();
-// builder.Services.AddScoped<IOpenAIService, OpenAIService>();
-// builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
-// builder.Services.AddScoped<IFileStorageService, FileStorageService>();
-// builder.Services.AddScoped<ISessionService, SessionService>();
+// Add HTTP client for external requests
+builder.Services.AddHttpClient();
+
+// Add custom services
+builder.Services.AddScoped<ICVGenerationService, CVGenerationService>();
+builder.Services.AddScoped<IOpenAIService, OpenAIService>();
+builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IEvaluationService, EvaluationService>();
+builder.Services.AddScoped<IMonitoringService, MonitoringService>();
+
+// Add agent services
+builder.Services.AddScoped<ICVParsingAgent, CVParsingAgent>();
+builder.Services.AddScoped<IJobExtractionAgent, JobExtractionAgent>();
+builder.Services.AddScoped<IMatchingAgent, MatchingAgent>();
+builder.Services.AddScoped<ICVGenerationAgent, CVGenerationAgent>();
+builder.Services.AddScoped<IReviewAgent, ReviewAgent>();
+builder.Services.AddScoped<IMultiAgentOrchestrator, MultiAgentOrchestrator>();
+
+// Add guardrail services
+builder.Services.AddScoped<IGuardrailService, GuardrailService>();
+builder.Services.AddScoped<IInputGuardrail, JobPostingGuardrail>();
+builder.Services.AddScoped<IInputGuardrail, CVContentGuardrail>();
+builder.Services.AddScoped<IOutputGuardrail, TruthfulnessGuardrail>();
+builder.Services.AddScoped<IOutputGuardrail, DocumentQualityGuardrail>();
+builder.Services.AddScoped<IOutputGuardrail, ComplianceGuardrail>();
+
+// Register guardrails with the service
+builder.Services.AddHostedService<GuardrailRegistrationService>();
 
 // Add CORS
 builder.Services.AddCors(options =>
