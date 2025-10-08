@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Infrastructure.Services;
 using CVAgentApp.Infrastructure.Data;
+using CVAgentApp.Desktop.Services;
 
 namespace CVAgentApp.Desktop;
 
@@ -41,8 +42,8 @@ class Program
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseInMemoryDatabase("cvagent_desktop"));
 
-                    // Core services
-                    services.AddScoped<ICVGenerationService, CVGenerationService>();
+                    // Core services - Using mock service for desktop testing
+                    services.AddScoped<ICVGenerationService, MockCVGenerationService>();
                     services.AddScoped<IOpenAIService, OpenAIService>();
                     services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
                     services.AddScoped<IFileStorageService, FileStorageService>();
