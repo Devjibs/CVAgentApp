@@ -42,8 +42,10 @@ class Program
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseInMemoryDatabase("cvagent_desktop"));
 
-                    // Core services - Using mock service for desktop testing
-                    services.AddScoped<ICVGenerationService, MockCVGenerationService>();
+                    // Core services - Using configurable service that falls back to mock when needed
+                    services.AddScoped<CVGenerationService>();
+                    services.AddScoped<MockCVGenerationService>();
+                    services.AddScoped<ICVGenerationService, ConfigurableCVGenerationService>();
                     services.AddScoped<IOpenAIService, OpenAIService>();
                     services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
                     services.AddScoped<IFileStorageService, FileStorageService>();

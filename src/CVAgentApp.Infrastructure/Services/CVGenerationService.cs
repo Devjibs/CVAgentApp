@@ -236,15 +236,39 @@ public class CVGenerationService : ICVGenerationService
     {
         using var stream = cvFile.OpenReadStream();
 
-        return cvFile.ContentType.ToLower() switch
+        // Handle common file types, including octet-stream which is often used for uploads
+        var contentType = cvFile.ContentType.ToLower();
+        var fileName = cvFile.FileName.ToLower();
+        
+        // Determine file type by extension if content type is generic
+        if (contentType == "application/octet-stream" || string.IsNullOrEmpty(contentType))
+        {
+            if (fileName.EndsWith(".pdf"))
+                contentType = "application/pdf";
+            else if (fileName.EndsWith(".docx"))
+                contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            else if (fileName.EndsWith(".doc"))
+                contentType = "application/msword";
+            else if (fileName.EndsWith(".txt"))
+                contentType = "text/plain";
+        }
+        
+        return contentType switch
         {
             "application/pdf" => await _documentProcessingService.ExtractTextFromPDFAsync(stream),
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" =>
                 await _documentProcessingService.ExtractTextFromWordAsync(stream),
             "application/msword" =>
                 await _documentProcessingService.ExtractTextFromWordAsync(stream),
-            _ => throw new NotSupportedException($"File type {cvFile.ContentType} is not supported")
+            "text/plain" => await ExtractTextFromPlainTextAsync(stream),
+            _ => throw new NotSupportedException($"File type {contentType} is not supported. Supported types: PDF, DOC, DOCX, TXT")
         };
+    }
+
+    private async Task<string> ExtractTextFromPlainTextAsync(Stream textStream)
+    {
+        using var reader = new StreamReader(textStream);
+        return await reader.ReadToEndAsync();
     }
 
     private async Task<GeneratedDocumentDto> GenerateDocumentAsync(

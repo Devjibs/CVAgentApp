@@ -48,9 +48,9 @@ public partial class MainForm : Form
 
         // Form properties
         this.Text = "CV Agent - AI-Powered CV Generation";
-        this.Size = new Size(1024, 768);
+        this.Size = new Size(1400, 900);
         this.StartPosition = FormStartPosition.CenterScreen;
-        this.MinimumSize = new Size(800, 600);
+        this.MinimumSize = new Size(1200, 700);
 
         // Create menu strip
         var menuStrip = new MenuStrip();
@@ -208,7 +208,8 @@ public partial class MainForm : Form
 
         cvPreviewBrowser = new WebBrowser
         {
-            Dock = DockStyle.Fill
+            Dock = DockStyle.Fill,
+            MinimumSize = new Size(400, 500)
         };
         cvPreviewPanel.Controls.Add(cvPreviewBrowser);
 
@@ -237,7 +238,8 @@ public partial class MainForm : Form
 
         coverLetterPreviewBrowser = new WebBrowser
         {
-            Dock = DockStyle.Fill
+            Dock = DockStyle.Fill,
+            MinimumSize = new Size(400, 500)
         };
         coverLetterPreviewPanel.Controls.Add(coverLetterPreviewBrowser);
 
@@ -377,7 +379,16 @@ public partial class MainForm : Form
                 var response = await _cvGenerationService.GetSessionStatusAsync(sessionToken!);
                 var cvDoc = response.Documents.First(d => d.Type == DocumentType.CV);
                 
-                if (!string.IsNullOrEmpty(cvDoc.DownloadUrl))
+                // For mock service, generate PDF content from HTML
+                if (cvDoc.DownloadUrl.StartsWith("mock://"))
+                {
+                    // Convert HTML content to PDF bytes (simplified for demo)
+                    var htmlContent = cvDoc.Content;
+                    var pdfBytes = System.Text.Encoding.UTF8.GetBytes($"PDF Content:\n{htmlContent}");
+                    await File.WriteAllBytesAsync(saveFileDialog.FileName, pdfBytes);
+                    if (statusLabel != null) statusLabel.Text = "CV downloaded successfully";
+                }
+                else if (!string.IsNullOrEmpty(cvDoc.DownloadUrl))
                 {
                     var bytes = await _httpClient.GetByteArrayAsync(cvDoc.DownloadUrl);
                     await File.WriteAllBytesAsync(saveFileDialog.FileName, bytes);
@@ -416,7 +427,16 @@ public partial class MainForm : Form
                 var response = await _cvGenerationService.GetSessionStatusAsync(sessionToken!);
                 var coverLetterDoc = response.Documents.First(d => d.Type == DocumentType.CoverLetter);
                 
-                if (!string.IsNullOrEmpty(coverLetterDoc.DownloadUrl))
+                // For mock service, generate PDF content from HTML
+                if (coverLetterDoc.DownloadUrl.StartsWith("mock://"))
+                {
+                    // Convert HTML content to PDF bytes (simplified for demo)
+                    var htmlContent = coverLetterDoc.Content;
+                    var pdfBytes = System.Text.Encoding.UTF8.GetBytes($"PDF Content:\n{htmlContent}");
+                    await File.WriteAllBytesAsync(saveFileDialog.FileName, pdfBytes);
+                    if (statusLabel != null) statusLabel.Text = "Cover letter downloaded successfully";
+                }
+                else if (!string.IsNullOrEmpty(coverLetterDoc.DownloadUrl))
                 {
                     var bytes = await _httpClient.GetByteArrayAsync(coverLetterDoc.DownloadUrl);
                     await File.WriteAllBytesAsync(saveFileDialog.FileName, bytes);
