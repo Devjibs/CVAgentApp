@@ -1,5 +1,7 @@
 using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Entities;
+using Microsoft.AspNetCore.Http;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Core.Interfaces;
 
@@ -59,7 +61,7 @@ public interface ICVGenerationAgent : IAgentService
 public interface IReviewAgent : IAgentService
 {
     Task<AgentResult<ReviewResult>> ReviewDocumentAsync(string content, DocumentType type, AgentContext context);
-    Task<AgentResult<bool>> ValidateTruthfulnessAsync(string originalCV, string generatedCV);
+    Task<AgentResult<ValidationResult>> ValidateTruthfulnessAsync(string originalCV, string generatedCV);
     Task<AgentResult<List<string>>> ExtractFabricatedContentAsync(string originalCV, string generatedCV);
 }
 

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using CVAgentApp.Core.Entities;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Core.DTOs;
 

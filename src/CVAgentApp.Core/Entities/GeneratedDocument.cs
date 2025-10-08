@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Core.Entities;
 
@@ -35,7 +36,7 @@ public class GeneratedDocument
     public JobPosting JobPosting { get; set; } = null!;
 
     public Guid SessionId { get; set; }
-    public Session Session { get; set; } = null!;
+    public DocumentSession Session { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
@@ -44,7 +45,7 @@ public class GeneratedDocument
     public DateTime? ExpiresAt { get; set; }
 }
 
-public class Session
+public class DocumentSession
 {
     public Guid Id { get; set; }
 
@@ -71,26 +72,3 @@ public class Session
     public DateTime ExpiresAt { get; set; }
 }
 
-public enum DocumentType
-{
-    CV = 1,
-    CoverLetter = 2,
-    Portfolio = 3
-}
-
-public enum DocumentStatus
-{
-    Processing = 1,
-    Completed = 2,
-    Failed = 3,
-    Expired = 4
-}
-
-public enum SessionStatus
-{
-    Created = 1,
-    Processing = 2,
-    Completed = 3,
-    Failed = 4,
-    Expired = 5
-}

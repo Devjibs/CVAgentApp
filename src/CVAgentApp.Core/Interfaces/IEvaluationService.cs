@@ -1,5 +1,6 @@
 using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Entities;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Core.Interfaces;
 

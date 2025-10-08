@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Core.Entities;
 
@@ -107,29 +108,3 @@ public class CompanyInfo
     public JobPosting JobPosting { get; set; } = null!;
 }
 
-public enum EmploymentType
-{
-    FullTime = 1,
-    PartTime = 2,
-    Contract = 3,
-    Internship = 4,
-    Temporary = 5
-}
-
-public enum ExperienceLevel
-{
-    Entry = 1,
-    Mid = 2,
-    Senior = 3,
-    Lead = 4,
-    Executive = 5
-}
-
-public enum QualificationType
-{
-    Education = 1,
-    Experience = 2,
-    Certification = 3,
-    Skill = 4,
-    Other = 5
-}

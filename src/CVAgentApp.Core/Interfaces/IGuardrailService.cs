@@ -1,4 +1,7 @@
 using CVAgentApp.Core.Entities;
+using Microsoft.AspNetCore.Http;
+using CVAgentApp.Core.DTOs;
+using CVAgentApp.Core.Enums;
 
 namespace CVAgentApp.Core.Interfaces;
 
