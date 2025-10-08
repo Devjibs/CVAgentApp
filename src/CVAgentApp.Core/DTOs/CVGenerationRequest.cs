@@ -212,6 +212,22 @@ public class ProjectDto
     public List<string> Technologies { get; set; } = new();
 }
 
+public class JobAnalysisRequest
+{
+    [Required]
+    [Url]
+    public string JobUrl { get; set; } = string.Empty;
+
+    public string? CompanyName { get; set; }
+}
+
+public class ErrorResponse
+{
+    public string Error { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string? Details { get; set; }
+}
+
 public enum CVGenerationStatus
 {
     Created = 1,

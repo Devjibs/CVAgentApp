@@ -1,3 +1,4 @@
+using CVAgentApp.API.Swagger;
 using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Infrastructure.Agents;
 using CVAgentApp.Infrastructure.Data;
@@ -5,21 +6,36 @@ using CVAgentApp.Infrastructure.Guardrails;
 using CVAgentApp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "CV Agent API",
-        Version = "v1",
-        Description = "AI-powered CV generation and job matching API"
-    });
-});
+// Temporarily disable Swagger to test API functionality
+// builder.Services.AddSwaggerGen(c =>
+// {
+//     c.SwaggerDoc("v1", new OpenApiInfo
+//     {
+//         Title = "CV Agent API",
+//         Version = "v1",
+//         Description = "AI-powered CV generation and job matching API"
+//     });
+//     
+//     // Configure file upload support
+//     c.OperationFilter<FileUploadOperationFilter>();
+//     
+//     // Add security definition for API key
+//     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+//     {
+//         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+//         Name = "Authorization",
+//         In = ParameterLocation.Header,
+//         Type = SecuritySchemeType.ApiKey,
+//         Scheme = "Bearer"
+//     });
+// });
 
 // Add Entity Framework
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -70,11 +86,12 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Temporarily disable Swagger to test API functionality
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
 
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
