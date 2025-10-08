@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Agent Test Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .loading {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .document-link {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .document-link:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🤖 CV Agent Test Client</h1>
+        <p>Test the AI-powered CV generation and job analysis features.</p>
+
+        <div class="form-group">
+            <label for="cvFile">Upload CV (PDF or Word):</label>
+            <input type="file" id="cvFile" accept=".pdf,.doc,.docx">
+        </div>
+
+        <div class="form-group">
+            <label for="jobUrl">Job Posting URL:</label>
+            <input type="url" id="jobUrl" placeholder="https://example.com/job-posting"
+                value="https://example.com/software-engineer-job">
+        </div>
+
+        <div class="form-group">
+            <label for="companyName">Company Name (optional):</label>
+            <input type="text" id="companyName" placeholder="e.g., Microsoft, Google, etc.">
+        </div>
+
+        <button onclick="analyzeJob()">🔍 Analyze Job Posting</button>
+        <button onclick="analyzeCV()">📄 Analyze CV</button>
+        <button onclick="generateCV()">🚀 Generate Tailored CV & Cover Letter</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+
+        function showResult(message, type = 'success') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+
+        function showLoading(message) {
+            showResult(message, 'loading');
+        }
+
+        async function analyzeJob() {
+            const jobUrl = document.getElementById('jobUrl').value;
+            const companyName = document.getElementById('companyName').value;
+
+            if (!jobUrl) {
+                showResult('Please enter a job URL', 'error');
+                return;
+            }
+
+            showLoading('Analyzing job posting...');
+
+            try {
+                const response = await fetch(`${API_BASE}/simplecv/analyze-job`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        jobUrl: jobUrl,
+                        companyName: companyName || null
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResult(`Job Analysis Complete!\n\nTitle: ${result.jobTitle}\nCompany: ${result.company}\nLocation: ${result.location}\nEmployment Type: ${result.employmentType}\nExperience Level: ${result.experienceLevel}\n\nDescription: ${result.description}\n\nRequirements: ${result.requirements}\n\nRequired Skills: ${result.requiredSkills.join(', ')}`, 'success');
+                } else {
+                    showResult(`Error: ${result.message || 'Failed to analyze job posting'}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function analyzeCV() {
+            const cvFile = document.getElementById('cvFile').files[0];
+
+            if (!cvFile) {
+                showResult('Please select a CV file', 'error');
+                return;
+            }
+
+            showLoading('Analyzing CV...');
+
+            try {
+                const formData = new FormData();
+                formData.append('cvFile', cvFile);
+
+                const response = await fetch(`${API_BASE}/simplecv/analyze-candidate`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResult(`CV Analysis Complete!\n\nName: ${result.firstName} ${result.lastName}\nEmail: ${result.email || 'N/A'}\nPhone: ${result.phone || 'N/A'}\nLocation: ${result.location || 'N/A'}\n\nSummary: ${result.summary || 'N/A'}\n\nWork Experience: ${result.workExperiences.length} positions\nEducation: ${result.education.length} entries\nSkills: ${result.skills.length} skills\nCertifications: ${result.certifications.length} certifications\nProjects: ${result.projects.length} projects`, 'success');
+                } else {
+                    showResult(`Error: ${result.message || 'Failed to analyze CV'}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function generateCV() {
+            const cvFile = document.getElementById('cvFile').files[0];
+            const jobUrl = document.getElementById('jobUrl').value;
+            const companyName = document.getElementById('companyName').value;
+
+            if (!cvFile) {
+                showResult('Please select a CV file', 'error');
+                return;
+            }
+
+            if (!jobUrl) {
+                showResult('Please enter a job URL', 'error');
+                return;
+            }
+
+            showLoading('Generating tailored CV and cover letter... This may take a few minutes.');
+
+            try {
+                const formData = new FormData();
+                formData.append('cvFile', cvFile);
+                formData.append('jobPostingUrl', jobUrl);
+                if (companyName) {
+                    formData.append('companyName', companyName);
+                }
+
+                const response = await fetch(`${API_BASE}/simplecv/generate`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (result.status === 'Completed') {
+                        let message = `🎉 CV Generation Complete!\n\nSession ID: ${result.sessionId}\nSession Token: ${result.sessionToken}\n\nGenerated Documents:\n`;
+
+                        result.documents.forEach((doc, index) => {
+                            message += `${index + 1}. ${doc.fileName} (${doc.type})\n`;
+                            if (doc.downloadUrl) {
+                                message += `   Download: ${doc.downloadUrl}\n`;
+                            }
+                        });
+
+                        showResult(message, 'success');
+
+                        // Add download links
+                        const resultDiv = document.getElementById('result');
+                        resultDiv.innerHTML = `<div class="result success">${message.replace(/\n/g, '<br>')}</div>`;
+
+                        result.documents.forEach((doc, index) => {
+                            if (doc.downloadUrl) {
+                                const link = document.createElement('a');
+                                link.href = doc.downloadUrl;
+                                link.textContent = `📄 Download ${doc.fileName}`;
+                                link.className = 'document-link';
+                                link.target = '_blank';
+                                resultDiv.appendChild(link);
+                            }
+                        });
+                    } else {
+                        showResult(`Generation Status: ${result.status}\nMessage: ${result.message || 'Processing...'}`, 'loading');
+                    }
+                } else {
+                    showResult(`Error: ${result.errorMessage || 'Failed to generate CV'}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test API connectivity
+        async function testAPI() {
+            try {
+                const response = await fetch(`${API_BASE.replace('/api', '')}/weatherforecast`);
+                if (response.ok) {
+                    console.log('✅ API is running and accessible');
+                } else {
+                    console.log('❌ API is not responding correctly');
+                }
+            } catch (error) {
+                console.log('❌ API is not accessible:', error.message);
+            }
+        }
+
+        // Test API on page load
+        testAPI();
+    </script>
+</body>
+
+</html>
