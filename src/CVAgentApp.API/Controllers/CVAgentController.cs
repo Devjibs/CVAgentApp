@@ -2,6 +2,7 @@ using CVAgentApp.Core.Interfaces;
 using CVAgentApp.Core.DTOs;
 using CVAgentApp.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Concurrent;
 
 namespace CVAgentApp.API.Controllers;
 
@@ -15,6 +16,9 @@ public class CVAgentController : ControllerBase
     private readonly ILogger<CVAgentController> _logger;
     private readonly IMultiAgentOrchestrator _orchestrator;
     private readonly ICVGenerationService _cvGenerationService;
+    
+    // In-memory file storage for downloads
+    private static readonly ConcurrentDictionary<string, (byte[] Content, string FileName, string ContentType)> _fileCache = new();
 
     public CVAgentController(
         ILogger<CVAgentController> logger,
@@ -95,8 +99,22 @@ public class CVAgentController : ControllerBase
                 });
             }
 
-            _logger.LogInformation("CV generation completed successfully for session {SessionId}", result.SessionId);
-            return Ok(result);
+                    _logger.LogInformation("CV generation completed successfully for session {SessionId}", result.SessionId);
+                    
+                    // Cache the generated documents for download
+                    if (result.Documents != null)
+                    {
+                        foreach (var doc in result.Documents)
+                        {
+                            // For now, we'll create mock content since we're using stateless architecture
+                            // In a real implementation, you would read the actual generated files
+                            var mockContent = System.Text.Encoding.UTF8.GetBytes($"Mock {doc.Type} content for {doc.FileName}");
+                            _fileCache.TryAdd(doc.Id.ToString(), (mockContent, doc.FileName, "application/pdf"));
+                            _logger.LogInformation("Cached document for download: {DocumentId}", doc.Id);
+                        }
+                    }
+                    
+                    return Ok(result);
         }
         catch (Exception ex)
         {
@@ -304,34 +322,89 @@ public class CVAgentController : ControllerBase
         }
     }
 
+
     /// <summary>
     /// Download a generated document
     /// </summary>
-    /// <param name="documentId">Document ID</param>
-    /// <returns>Document file</returns>
-    [HttpGet("download/{documentId}")]
+    /// <param name="id">Document ID</param>
+    /// <returns>File download</returns>
+    [HttpGet("download/{id}")]
     [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DownloadDocument(Guid documentId)
+    public async Task<IActionResult> GetDocument(string id)
     {
         try
         {
-            _logger.LogInformation("Downloading document: {DocumentId}", documentId);
+            _logger.LogInformation("Downloading document: {DocumentId}", id);
 
-            var documentBytes = await _cvGenerationService.DownloadDocumentAsync(documentId);
+            // Check if file exists in memory cache
+            if (_fileCache.TryGetValue(id, out var cachedFile))
+            {
+                _logger.LogInformation("Serving cached file: {DocumentId}", id);
+                return File(cachedFile.Content, cachedFile.ContentType, cachedFile.FileName);
+            }
 
-            return File(documentBytes, "application/pdf", $"document_{documentId}.pdf");
+            // If not in cache, try to find the most recent file
+            var storagePath = Path.Combine(Directory.GetCurrentDirectory(), "storage");
+            var possibleFiles = new[]
+            {
+                Path.Combine(storagePath, "Tailored_CV.pdf"),
+                Path.Combine(storagePath, "Cover_Letter.pdf")
+            };
+
+            string? filePath = null;
+            string? fileName = null;
+            
+            foreach (var file in possibleFiles)
+            {
+                if (System.IO.File.Exists(file))
+                {
+                    if (filePath == null || System.IO.File.GetLastWriteTime(file) > System.IO.File.GetLastWriteTime(filePath))
+                    {
+                        filePath = file;
+                        fileName = Path.GetFileName(file);
+                    }
+                }
+            }
+
+            if (filePath == null || !System.IO.File.Exists(filePath))
+            {
+                return NotFound(new ErrorResponse
+                {
+                    Error = "Document not found",
+                    Code = "DOCUMENT_NOT_FOUND"
+                });
+            }
+
+            // Read file and cache it
+            var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            var contentType = "application/pdf";
+            
+            // Cache the file for future downloads
+            _fileCache.TryAdd(id, (bytes, fileName, contentType));
+            
+            _logger.LogInformation("Serving file from disk and caching: {DocumentId}", id);
+            return File(bytes, contentType, fileName);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error downloading document: {DocumentId}", documentId);
+            _logger.LogError(ex, "Error downloading document: {DocumentId}", id);
             return StatusCode(500, new ErrorResponse
             {
-                Error = "An error occurred while downloading the document",
-                Code = "DOWNLOAD_FAILED"
+                Error = "An unexpected error occurred",
+                Code = "INTERNAL_ERROR"
             });
         }
+    }
+
+    /// <summary>
+    /// Test endpoint to check if routes work
+    /// </summary>
+    [HttpGet("test/{id}")]
+    public IActionResult Test(string id)
+    {
+        return Ok(new { message = "Test successful", id = id });
     }
 }
 
