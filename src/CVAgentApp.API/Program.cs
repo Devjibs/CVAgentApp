@@ -10,6 +10,11 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -44,6 +49,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add HTTP client for external requests
 builder.Services.AddHttpClient();
+
+// Add HTTP client service
+builder.Services.AddScoped<IHttpClientService, HttpClientService>();
+
+// Add OpenAI file service
+builder.Services.AddScoped<IOpenAIFileService, OpenAIFileService>();
+
+// Add web scraping service
+builder.Services.AddScoped<IWebScrapingService, WebScrapingService>();
 
 // Add custom services
 builder.Services.AddScoped<ICVGenerationService, CVGenerationService>();

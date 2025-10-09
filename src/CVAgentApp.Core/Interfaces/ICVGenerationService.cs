@@ -22,6 +22,7 @@ public interface IOpenAIService
     Task<string> GenerateCVAsync(CandidateAnalysisResponse candidate, JobAnalysisResponse job);
     Task<string> GenerateCoverLetterAsync(CandidateAnalysisResponse candidate, JobAnalysisResponse job);
     Task<string> ResearchCompanyAsync(string companyName);
+    Task<string> ProcessWithFileAsync(string fileId, string prompt);
 }
 
 public interface IDocumentProcessingService

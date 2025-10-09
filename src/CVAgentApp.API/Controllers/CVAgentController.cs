@@ -16,6 +16,8 @@ public class CVAgentController : ControllerBase
     private readonly ILogger<CVAgentController> _logger;
     private readonly IMultiAgentOrchestrator _orchestrator;
     private readonly ICVGenerationService _cvGenerationService;
+    private readonly IDocumentProcessingService _documentProcessingService;
+    private readonly IFileStorageService _fileStorageService;
     
     // In-memory file storage for downloads
     private static readonly ConcurrentDictionary<string, (byte[] Content, string FileName, string ContentType)> _fileCache = new();
@@ -23,11 +25,15 @@ public class CVAgentController : ControllerBase
     public CVAgentController(
         ILogger<CVAgentController> logger,
         IMultiAgentOrchestrator orchestrator,
-        ICVGenerationService cvGenerationService)
+        ICVGenerationService cvGenerationService,
+        IDocumentProcessingService documentProcessingService,
+        IFileStorageService fileStorageService)
     {
         _logger = logger;
         _orchestrator = orchestrator;
         _cvGenerationService = cvGenerationService;
+        _documentProcessingService = documentProcessingService;
+        _fileStorageService = fileStorageService;
     }
 
     /// <summary>
@@ -65,12 +71,12 @@ public class CVAgentController : ControllerBase
             }
 
             // Validate file type
-            var allowedTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document" };
+            var allowedTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain" };
             if (!allowedTypes.Contains(request.CVFile.ContentType.ToLower()))
             {
                 return BadRequest(new ErrorResponse
                 {
-                    Error = "Only PDF and Word documents are supported",
+                    Error = "Only PDF, Word documents, and text files are supported",
                     Code = "INVALID_FILE_TYPE"
                 });
             }
@@ -86,7 +92,11 @@ public class CVAgentController : ControllerBase
             }
 
             // Execute CV generation using the service directly (with mock data)
+            _logger.LogInformation("=== CALLING CV GENERATION SERVICE ===");
+            Console.WriteLine("=== CALLING CV GENERATION SERVICE ===");
             var result = await _cvGenerationService.GenerateCVAsync(request);
+            _logger.LogInformation("=== CV GENERATION SERVICE COMPLETED ===");
+            Console.WriteLine("=== CV GENERATION SERVICE COMPLETED ===");
 
             if (result.Status == CVGenerationStatus.Failed)
             {
@@ -99,22 +109,38 @@ public class CVAgentController : ControllerBase
                 });
             }
 
-                    _logger.LogInformation("CV generation completed successfully for session {SessionId}", result.SessionId);
+            _logger.LogInformation("CV generation completed successfully for session {SessionId}", result.SessionId);
+            
+            // Cache the generated documents for download
+            var documentsToCache = result.Documents ?? new List<GeneratedDocumentDto>();
+            _logger.LogInformation("Documents to cache: {Count}", documentsToCache.Count);
+            
+            foreach (var doc in documentsToCache)
+            {
+                try
+                {
+                    _logger.LogInformation("Caching document: {DocumentId} - {FileName}", doc.Id, doc.FileName);
                     
-                    // Cache the generated documents for download
-                    if (result.Documents != null)
+                    // Generate actual PDF bytes for caching
+                    var pdfBytes = await _documentProcessingService.GeneratePDFAsync(doc.Content ?? "");
+                    
+                    // Cache using both document ID and OpenAI file ID for flexibility
+                    var cached1 = _fileCache.TryAdd(doc.Id.ToString(), (pdfBytes, doc.FileName, "application/pdf"));
+                    _logger.LogInformation("Cached by ID {DocumentId}: {Success}", doc.Id, cached1);
+                    
+                    if (!string.IsNullOrEmpty(doc.DownloadUrl))
                     {
-                        foreach (var doc in result.Documents)
-                        {
-                            // For now, we'll create mock content since we're using stateless architecture
-                            // In a real implementation, you would read the actual generated files
-                            var mockContent = System.Text.Encoding.UTF8.GetBytes($"Mock {doc.Type} content for {doc.FileName}");
-                            _fileCache.TryAdd(doc.Id.ToString(), (mockContent, doc.FileName, "application/pdf"));
-                            _logger.LogInformation("Cached document for download: {DocumentId}", doc.Id);
-                        }
+                        var cached2 = _fileCache.TryAdd(doc.DownloadUrl, (pdfBytes, doc.FileName, "application/pdf"));
+                        _logger.LogInformation("Cached by URL {Url}: {Success}", doc.DownloadUrl, cached2);
                     }
-                    
-                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error caching document {DocumentId}: {Message}", doc.Id, ex.Message);
+                }
+            }
+            
+            return Ok(result);
         }
         catch (Exception ex)
         {
@@ -338,54 +364,20 @@ public class CVAgentController : ControllerBase
         {
             _logger.LogInformation("Downloading document: {DocumentId}", id);
 
-            // Check if file exists in memory cache
+            // Check if file exists in memory cache first
             if (_fileCache.TryGetValue(id, out var cachedFile))
             {
                 _logger.LogInformation("Serving cached file: {DocumentId}", id);
                 return File(cachedFile.Content, cachedFile.ContentType, cachedFile.FileName);
             }
 
-            // If not in cache, try to find the most recent file
-            var storagePath = Path.Combine(Directory.GetCurrentDirectory(), "storage");
-            var possibleFiles = new[]
+            // If not in cache, return not found
+            _logger.LogWarning("Document not found in cache: {DocumentId}", id);
+            return NotFound(new ErrorResponse
             {
-                Path.Combine(storagePath, "Tailored_CV.pdf"),
-                Path.Combine(storagePath, "Cover_Letter.pdf")
-            };
-
-            string? filePath = null;
-            string? fileName = null;
-            
-            foreach (var file in possibleFiles)
-            {
-                if (System.IO.File.Exists(file))
-                {
-                    if (filePath == null || System.IO.File.GetLastWriteTime(file) > System.IO.File.GetLastWriteTime(filePath))
-                    {
-                        filePath = file;
-                        fileName = Path.GetFileName(file);
-                    }
-                }
-            }
-
-            if (filePath == null || !System.IO.File.Exists(filePath))
-            {
-                return NotFound(new ErrorResponse
-                {
-                    Error = "Document not found",
-                    Code = "DOCUMENT_NOT_FOUND"
-                });
-            }
-
-            // Read file and cache it
-            var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
-            var contentType = "application/pdf";
-            
-            // Cache the file for future downloads
-            _fileCache.TryAdd(id, (bytes, fileName, contentType));
-            
-            _logger.LogInformation("Serving file from disk and caching: {DocumentId}", id);
-            return File(bytes, contentType, fileName);
+                Error = "Document not found",
+                Code = "DOCUMENT_NOT_FOUND"
+            });
         }
         catch (Exception ex)
         {
@@ -406,6 +398,80 @@ public class CVAgentController : ControllerBase
     {
         return Ok(new { message = "Test successful", id = id });
     }
+
+        /// <summary>
+        /// Test endpoint to check cache status
+        /// </summary>
+        [HttpGet("cache-status")]
+        public IActionResult GetCacheStatus()
+        {
+            var cacheKeys = _fileCache.Keys.ToList();
+            return Ok(new { 
+                cacheCount = _fileCache.Count,
+                cacheKeys = cacheKeys,
+                message = $"Cache contains {_fileCache.Count} items"
+            });
+        }
+
+        /// <summary>
+        /// Test endpoint to manually add something to cache
+        /// </summary>
+        [HttpGet("test-cache")]
+        public async Task<IActionResult> TestCache()
+        {
+            try
+            {
+                var testContent = "Test PDF content";
+                var pdfBytes = await _documentProcessingService.GeneratePDFAsync(testContent);
+                var success = _fileCache.TryAdd("test-doc-id", (pdfBytes, "test.pdf", "application/pdf"));
+                
+                return Ok(new {
+                    message = "Test cache operation completed",
+                    success = success,
+                    cacheCount = _fileCache.Count,
+                    pdfSize = pdfBytes.Length
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new {
+                    message = "Test cache operation failed",
+                    error = ex.Message,
+                    stackTrace = ex.StackTrace
+                });
+            }
+        }
+
+        /// <summary>
+        /// Test endpoint to check if service is working
+        /// </summary>
+        [HttpGet("test-service")]
+        public async Task<IActionResult> TestService()
+        {
+            try
+            {
+                // Test if the service is working
+                var testRequest = new CVGenerationRequest
+                {
+                    CVFile = null, // This will cause an exception, but we can catch it
+                    JobPostingUrl = "https://example.com/test",
+                    CompanyName = "Test Company"
+                };
+                
+                return Ok(new { 
+                    message = "Service test endpoint reached",
+                    timestamp = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { 
+                    message = "Service test endpoint reached with exception",
+                    exception = ex.Message,
+                    timestamp = DateTime.UtcNow
+                });
+            }
+        }
 }
 
 /// <summary>

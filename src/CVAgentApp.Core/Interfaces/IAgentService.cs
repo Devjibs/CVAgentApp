@@ -145,3 +145,6 @@ public class CancellationResult
     public bool WasCancelled { get; set; }
     public string? Message { get; set; }
 }
+
+
+

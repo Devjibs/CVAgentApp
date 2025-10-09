@@ -329,3 +329,6 @@ public class ATSCompatibilityEvaluationRequest
 {
     public string Content { get; set; } = string.Empty;
 }
+
+
+

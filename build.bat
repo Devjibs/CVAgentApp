@@ -68,3 +68,6 @@ echo Distribution files are in the 'dist' folder.
 echo Run 'dist\install.bat' to install the application.
 echo.
 pause
+
+
+

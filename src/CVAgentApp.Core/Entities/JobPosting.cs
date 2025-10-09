@@ -108,3 +108,6 @@ public class CompanyInfo
     public JobPosting JobPosting { get; set; } = null!;
 }
 
+
+
+

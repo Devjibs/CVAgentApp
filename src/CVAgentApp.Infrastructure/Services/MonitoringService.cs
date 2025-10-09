@@ -130,48 +130,9 @@ public class MonitoringService : IMonitoringService
         {
             _logger.LogInformation("Getting performance metrics from {FromDate} to {ToDate}", fromDate, toDate);
 
-            // Mock implementation - in real scenario, this would query the metrics database
-            var metrics = new List<PerformanceMetric>
-            {
-                new PerformanceMetric
-                {
-                    MetricName = "agent_execution_time_cv_parsing",
-                    Value = 1250.5,
-                    Unit = "milliseconds",
-                    Timestamp = DateTime.UtcNow.AddHours(-1),
-                    Tags = new Dictionary<string, object>
-                    {
-                        ["agent_name"] = "CVParsingAgent",
-                        ["success"] = true
-                    }
-                },
-                new PerformanceMetric
-                {
-                    MetricName = "agent_execution_time_job_extraction",
-                    Value = 2100.3,
-                    Unit = "milliseconds",
-                    Timestamp = DateTime.UtcNow.AddHours(-1),
-                    Tags = new Dictionary<string, object>
-                    {
-                        ["agent_name"] = "JobExtractionAgent",
-                        ["success"] = true
-                    }
-                },
-                new PerformanceMetric
-                {
-                    MetricName = "guardrail_triggered",
-                    Value = 1,
-                    Unit = "count",
-                    Timestamp = DateTime.UtcNow.AddHours(-2),
-                    Tags = new Dictionary<string, object>
-                    {
-                        ["guardrail_name"] = "TruthfulnessGuardrail",
-                        ["violation_type"] = "FabricatedContent"
-                    }
-                }
-            };
-
-            return metrics;
+            // TODO: Implement actual metrics database query
+            // For now, return empty list
+            return new List<PerformanceMetric>();
         }
         catch (Exception ex)
         {
@@ -186,42 +147,9 @@ public class MonitoringService : IMonitoringService
         {
             _logger.LogInformation("Getting error reports from {FromDate} to {ToDate}", fromDate, toDate);
 
-            // Mock implementation - in real scenario, this would query the error logs
-            var errors = new List<ErrorReport>
-            {
-                new ErrorReport
-                {
-                    Id = Guid.NewGuid(),
-                    ErrorType = "AgentExecutionError",
-                    Message = "CV parsing agent failed to extract text from PDF",
-                    StackTrace = "System.Exception: PDF parsing failed...",
-                    SessionId = Guid.NewGuid(),
-                    AgentName = "CVParsingAgent",
-                    OccurredAt = DateTime.UtcNow.AddHours(-1),
-                    Context = new Dictionary<string, object>
-                    {
-                        ["file_type"] = "application/pdf",
-                        ["file_size"] = 1024000
-                    }
-                },
-                new ErrorReport
-                {
-                    Id = Guid.NewGuid(),
-                    ErrorType = "GuardrailViolation",
-                    Message = "Truthfulness guardrail detected fabricated content",
-                    StackTrace = "",
-                    SessionId = Guid.NewGuid(),
-                    AgentName = "TruthfulnessGuardrail",
-                    OccurredAt = DateTime.UtcNow.AddHours(-2),
-                    Context = new Dictionary<string, object>
-                    {
-                        ["violation_type"] = "FabricatedContent",
-                        ["fabricated_skills"] = "Machine Learning, Data Science"
-                    }
-                }
-            };
-
-            return errors;
+            // TODO: Implement actual error logs database query
+            // For now, return empty list
+            return new List<ErrorReport>();
         }
         catch (Exception ex)
         {
@@ -380,38 +308,43 @@ public class MonitoringService : IMonitoringService
 
     private double CalculateUptime()
     {
-        // Mock implementation - in real scenario, this would calculate actual uptime
-        return 99.9;
+        // TODO: Implement actual uptime calculation
+        // For now, return placeholder value
+        return 0.0;
     }
 
     private async Task<int> GetActiveSessionCountAsync()
     {
-        await Task.Delay(10);
-        return 5; // Mock value
+        // TODO: Implement actual active session count from database
+        // For now, return placeholder value
+        return 0;
     }
 
     private async Task<int> GetCompletedSessionCountAsync()
     {
-        await Task.Delay(10);
-        return 150; // Mock value
+        // TODO: Implement actual completed session count from database
+        // For now, return placeholder value
+        return 0;
     }
 
     private async Task<int> GetFailedSessionCountAsync()
     {
-        await Task.Delay(10);
-        return 12; // Mock value
+        // TODO: Implement actual failed session count from database
+        // For now, return placeholder value
+        return 0;
     }
 
     private async Task<double> GetAverageResponseTimeAsync()
     {
-        await Task.Delay(10);
-        return 2.5; // Mock value in seconds
+        // TODO: Implement actual average response time calculation
+        // For now, return placeholder value
+        return 0.0;
     }
 
     private async Task StoreMetricAsync(PerformanceMetric metric)
     {
-        // Mock implementation - in real scenario, this would store in a metrics database
-        await Task.Delay(10);
+        // TODO: Implement actual metrics storage in database
+        // For now, just log the metric
         _logger.LogDebug("Stored metric: {MetricName} = {Value} {Unit}", metric.MetricName, metric.Value, metric.Unit);
     }
 
@@ -433,8 +366,9 @@ public class MonitoringService : IMonitoringService
             }
         };
 
-        // Store error report (mock implementation)
-        await Task.Delay(10);
+        // TODO: Implement actual error logging to database
+        // For now, just log the error
         _logger.LogError("Error logged: {ErrorType} - {Message}", errorReport.ErrorType, errorReport.Message);
     }
 }
+

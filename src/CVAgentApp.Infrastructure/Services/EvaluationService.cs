@@ -206,28 +206,9 @@ public class EvaluationService : IEvaluationService
         {
             _logger.LogInformation("Getting evaluation history from {FromDate} to {ToDate}", fromDate, toDate);
 
-            // Mock implementation - in real scenario, this would query the database
-            var results = new List<EvaluationResult>
-            {
-                new EvaluationResult
-                {
-                    Id = Guid.NewGuid(),
-                    EvaluationType = "Workflow",
-                    Score = 0.85,
-                    Passed = true,
-                    EvaluatedAt = DateTime.UtcNow.AddHours(-1)
-                },
-                new EvaluationResult
-                {
-                    Id = Guid.NewGuid(),
-                    EvaluationType = "DocumentQuality",
-                    Score = 0.92,
-                    Passed = true,
-                    EvaluatedAt = DateTime.UtcNow.AddHours(-2)
-                }
-            };
-
-            return results;
+            // TODO: Implement actual database query for evaluation history
+            // For now, return empty list
+            return new List<EvaluationResult>();
         }
         catch (Exception ex)
         {
@@ -242,37 +223,20 @@ public class EvaluationService : IEvaluationService
         {
             _logger.LogInformation("Getting performance metrics from {FromDate} to {ToDate}", fromDate, toDate);
 
-            // Mock implementation - in real scenario, this would calculate from actual data
-            var metrics = new EvaluationMetrics
+            // TODO: Implement actual metrics calculation from database
+            // For now, return empty metrics
+            return new EvaluationMetrics
             {
-                AverageScore = 0.87,
-                SuccessRate = 0.92,
-                AverageExecutionTime = 45.5,
-                TotalEvaluations = 150,
-                PassedEvaluations = 138,
-                FailedEvaluations = 12,
-                ScoreByType = new Dictionary<string, double>
-                {
-                    ["Workflow"] = 0.85,
-                    ["DocumentQuality"] = 0.92,
-                    ["Truthfulness"] = 0.95,
-                    ["ATSCompatibility"] = 0.78
-                },
-                CommonIssues = new List<string>
-                {
-                    "Low keyword density",
-                    "Missing section headers",
-                    "Formatting issues"
-                },
-                TopRecommendations = new List<string>
-                {
-                    "Improve ATS compatibility",
-                    "Enhance document formatting",
-                    "Add more relevant keywords"
-                }
+                AverageScore = 0.0,
+                SuccessRate = 0.0,
+                AverageExecutionTime = 0.0,
+                TotalEvaluations = 0,
+                PassedEvaluations = 0,
+                FailedEvaluations = 0,
+                ScoreByType = new Dictionary<string, double>(),
+                CommonIssues = new List<string>(),
+                TopRecommendations = new List<string>()
             };
-
-            return metrics;
         }
         catch (Exception ex)
         {
@@ -283,30 +247,26 @@ public class EvaluationService : IEvaluationService
 
     private async Task<double> CalculateWorkflowScoreAsync(Guid sessionId)
     {
-        // Mock implementation
-        await Task.Delay(100);
-        return 0.85;
+        // TODO: Implement actual workflow scoring logic
+        throw new NotImplementedException("Workflow scoring not yet implemented");
     }
 
     private async Task<double> CalculateDocumentQualityScoreAsync(string content, DocumentType type)
     {
-        // Mock implementation
-        await Task.Delay(100);
-        return 0.92;
+        // TODO: Implement actual document quality scoring logic
+        throw new NotImplementedException("Document quality scoring not yet implemented");
     }
 
     private async Task<double> CalculateTruthfulnessScoreAsync(string originalContent, string generatedContent)
     {
-        // Mock implementation
-        await Task.Delay(100);
-        return 0.95;
+        // TODO: Implement actual truthfulness scoring logic
+        throw new NotImplementedException("Truthfulness scoring not yet implemented");
     }
 
     private async Task<double> CalculateATSCompatibilityScoreAsync(string content)
     {
-        // Mock implementation
-        await Task.Delay(100);
-        return 0.78;
+        // TODO: Implement actual ATS compatibility scoring logic
+        throw new NotImplementedException("ATS compatibility scoring not yet implemented");
     }
 
     private async Task<List<string>> IdentifyQualityIssuesAsync(string content, DocumentType type)
@@ -329,9 +289,8 @@ public class EvaluationService : IEvaluationService
 
     private async Task<List<string>> DetectFabricatedContentAsync(string originalContent, string generatedContent)
     {
-        await Task.Delay(50);
-        // Mock implementation - in real scenario, this would use AI to detect fabricated content
-        return new List<string>();
+        // TODO: Implement actual AI-based fabricated content detection
+        throw new NotImplementedException("Fabricated content detection not yet implemented");
     }
 
     private async Task<List<string>> IdentifyATSIssuesAsync(string content)
@@ -373,14 +332,14 @@ public class EvaluationService : IEvaluationService
 
     private double CalculateFormattingScore(string content)
     {
-        // Mock implementation
-        return 0.85;
+        // TODO: Implement actual formatting score calculation
+        throw new NotImplementedException("Formatting score calculation not yet implemented");
     }
 
     private double CalculateSimilarityScore(string originalContent, string generatedContent)
     {
-        // Mock implementation
-        return 0.92;
+        // TODO: Implement actual similarity score calculation
+        throw new NotImplementedException("Similarity score calculation not yet implemented");
     }
 
     private int CountSectionHeaders(string content)
@@ -396,13 +355,14 @@ public class EvaluationService : IEvaluationService
 
     private double CalculateFormattingComplexity(string content)
     {
-        // Mock implementation
-        return 0.3;
+        // TODO: Implement actual formatting complexity calculation
+        throw new NotImplementedException("Formatting complexity calculation not yet implemented");
     }
 
     private int CountATSFriendlyElements(string content)
     {
-        // Mock implementation
-        return 8;
+        // TODO: Implement actual ATS-friendly elements counting
+        throw new NotImplementedException("ATS-friendly elements counting not yet implemented");
     }
 }
+
